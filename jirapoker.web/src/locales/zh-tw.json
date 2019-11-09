@@ -1,0 +1,147 @@
+{
+  "button": {
+    "add": "加入",
+    "back": "回上頁",
+    "cancel": "取消",
+    "clean": "清除",
+    "clear": "清除",
+    "clone": "複製",
+    "confirmRemove": "確定",
+    "create": "新增",
+    "delete": "刪除",
+    "download": "下載",
+    "edit": "編輯",
+    "filter": "篩選",
+    "print": "列印",
+    "remove": "移除",
+    "reset": "重設",
+    "returnList": "返回列表",
+    "save": "儲存",
+    "search": "查詢"
+  },
+  "function": {
+    "receipt_detail": "簽單明細"
+  },
+  "main": {
+    "autoSignOut": "後自動登出",
+    "autoSignOut-short": "後登出",
+    "cautionSignOutPart1": "您未持續使用已經超過5分鐘，為確保您的帳戶安全，<br //>系統將於&nbsp",
+    "cautionSignOutPart2": "&nbsp後自動登出。繼續使用本系統請<br //>移動滑鼠游標。",
+    "continueOperate": "繼續使用系統",
+    "homeLink": "首頁",
+    "signout": "登出",
+    "userDataRoles": "資料權限群組",
+    "userDepartment": "部門",
+    "userInfo": "帳號資訊",
+    "userName": "身份",
+    "userRoles": "權限群組",
+    "welcomeMsg": "歡迎您!"
+  },
+  "mark": {
+    "comma": "，",
+    "exclamation": "！"
+  },
+  "menu": {
+    "home": "首頁",
+    "jira-poker": "估點"
+  },
+  "msg": {
+    "error": {
+      "httpRequestError": "目前無法完成您的要求，請重新嘗試！",
+      "httpTimeoutError": "網路連線過慢，請重新嘗試！",
+      "httpUnauthorizedError": "權限不足，請重新嘗試！",
+      "invalidParamError": "不正確的資料參數，請重新嘗試！",
+      "noPermissionType0Title1": "無法取得這個頁面",
+      "noPermissionType1Title1": "您沒有權限訪問『",
+      "noPermissionType1Title2": "』頁面",
+      "noPermissionType0Msg": "您前往的連結位址可能輸入錯誤或您沒有權限訪問。",
+      "noPermissionType1Msg": "請先向系統管理員確認您的權限。"
+    },
+    "success": {
+      "created": "已成功建立資料!",
+      "removed": "已成功刪除資料!",
+      "updated": "已成功更新資料!"
+    },
+    "warning": {
+      "emptyResult": "查無資料！"
+    }
+  },
+  "text": {
+    "account": "帳號",
+    "caution": "請注意",
+    "clear": "清除",
+    "clone": "複製",
+    "confirm": "確認",
+    "confirmRemove": "被刪除後將無法回復，確定要刪除？",
+    "confirmRemoveTitle": "確認刪除",
+    "create": "新增",
+    "createBy": "新增人員",
+    "createOn": "新增時間",
+    "days": "天",
+    "description": "說明",
+    "disable": "停用",
+    "duplicated": "已存在",
+    "edit": "編輯",
+    "employee": "員工",
+    "enable": "啟用",
+    "emptyResult": "無資料",
+    "failed": "失敗",
+    "format": "格式",
+    "hideSetting": "隱藏設定更多",
+    "incorrect": "不正確",
+    "keyword": "關鍵字",
+    "limitRecords": "顯示",
+    "manage": "管理",
+    "minute": "分",
+    "moreSetting": "設定更多",
+    "name": "姓名",
+    "nameCode": "名稱",
+    "please": "請",
+    "pleaseEnter": "請輸入",
+    "pleaseSelect": "請選擇",
+    "receipt_not_exist": "該筆簽單不存在",
+    "remove": "刪除",
+    "removeBy": "刪除人員",
+    "removeOn": "刪除時間",
+    "role": "角色",
+    "roleDestTitle": "該使用者角色",
+    "roleFilterHint": "輸入關鍵字搜尋角色",
+    "roleSourceTitle": "角色列表",
+    "roleTransferInfo": "選擇角色加入後使用者即擁有相對應的權限，一個使用者可以擁有多個角色。",
+    "search": "搜尋",
+    "second": "秒",
+    "selectable": "請選擇...",
+    "serialNumber": "編號",
+    "should_be_in": "範圍為",
+    "success": "成功",
+    "successDelete": "成功刪除",
+    "such": "此",
+    "the": "該",
+    "unitOfRecord": "筆",
+    "unitOfThing": "個",
+    "updateBy": "維護人員",
+    "updateOn": "維護時間",
+    "user": "使用者",
+    "view": "查看",
+    "warning": "警告",
+    "wrong": "錯誤"
+  },
+  "columns":{
+    "permission":{
+      "subPageName": "子功能名稱",
+      "query":  "查詢",
+      "create": "新增",
+      "edit": "編輯",
+      "remove": "刪除",
+      "clone": "複製",
+      "download": "下載",
+      "print":  "列印"
+    }	
+  },
+  "login": {
+    "accountPlaceholder":"帳號",
+    "pwdPlaceholder": "密碼",
+    "signIn": "登入",
+    "textForceSignOut": "強制登出"
+  }
+}

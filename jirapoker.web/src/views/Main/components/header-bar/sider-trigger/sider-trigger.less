@@ -1,0 +1,25 @@
+.trans{
+  transition: transform .2s ease;
+}
+@size: 40px;
+.sider-trigger-a{
+  padding: 6px;
+  width: @size;
+  height: @size;
+  display: inline-block;
+  text-align: center;
+  color: #797979 !important;
+  margin-top: 16px;
+  i{
+    .trans;
+    vertical-align: top;
+  }
+  &.collapsed i{
+    transform: rotateZ(90deg);
+    .trans;
+  }
+}
+
+.sider-trigger-a:hover{
+  color: #797979 !important;
+}

@@ -1,0 +1,84 @@
+.side-menu-wrapper{
+  user-select: none;
+  height:100%;
+  overflow-y: auto;
+  background-color: #F0F0F0;
+  .menu-collapsed{
+    .ivu-dropdown{
+      width: 100%;
+      .ivu-dropdown-rel a{
+        width: 100%;
+      }
+    }
+    .ivu-tooltip{
+      width: 100%;
+      .ivu-tooltip-rel{
+        width: 100%;
+      }
+      .ivu-tooltip-popper .ivu-tooltip-content{
+        .ivu-tooltip-arrow{
+          border-right-color: #fff;
+        }
+        .ivu-tooltip-inner{
+          background: #fff;
+          color: #4a4a4a;
+        }
+      }
+    }
+  }
+  a.drop-menu-a{
+    display: inline-block;
+    padding: 14px 15px;
+    font-size: 14px !important;
+    width: 100%;
+    text-align: center;
+    color: #4a4a4a;
+  }
+  .ivu-menu-light {
+    background: #F0F0F0 !important;
+    color: #4a4a4a !important;
+  }
+  .ivu-menu {
+    color: #4a4a4a !important;
+    .ivu-menu-submenu, .ivu-menu-item{
+      font-size: 15px !important;
+      i {
+        font-size: 16px !important;
+        width: 16px !important;
+        margin-right: 12px !important;
+        text-align: center;
+      }
+      .ivu-menu-item{
+        padding-left: 54px !important;
+      }
+    }
+    .ivu-menu-item.ivu-menu-item-active.ivu-menu-item-selected{
+      background-color: rgba(255, 255, 255, 0.6) !important;
+    }
+  }
+}
+
+.collased-menu-dropdown {
+  width: 100%;
+  margin: 0;
+  line-height: normal;
+  padding: 7px 0 6px 16px;
+  clear: both;
+  font-size: 15px !important;
+  white-space: nowrap;
+  list-style: none;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  &:hover {
+    background: rgba(100, 100, 100, 0.1);
+  }
+  & * {
+    color: #4a4a4a !important;
+  }
+}
+
+.ivu-select-dropdown.ivu-dropdown-transfer > .ivu-dropdown-menu > .ivu-dropdown-item{
+  font-size: 14px !important;
+  color: #4a4a4a;
+  padding: 10;
+}
