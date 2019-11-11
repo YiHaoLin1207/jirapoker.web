@@ -63,42 +63,6 @@ const loadLocalMessages = (): LocaleMessages => {
   return messages;
 };
 
-const getI18n = (lang: string, key: string): AxiosPromise<any> => {
-  const serverUrl: string = process.env.VUE_APP_HOST_BACKEND_URL!;
-  const uri = serverUrl.concat(`api/locale/get/${key}/${lang}`);
-  return axios.get(uri);
-};
-
-///  Load localized dictionaries asynconically
-const loadLanguageAsync = async (lang: string, key: string): Promise<any> => {
-  if (loadedLanguages.indexOf(lang) < 0) {
-    i18n.locale = lang;
-    return getI18n(lang, key);
-  } else {
-    return Promise.resolve(() => {
-      i18n.locale = lang;
-    });
-  }
-};
-
-
-const handleLocalization = (to: any, lang: string): void => {
-  const key = to.query.key || to.name;
-  const currMsg: any = i18n.getLocaleMessage(lang);
-
-  if (!currMsg[key]) {
-    loadLanguageAsync(lang, key).then((response) => {
-      for (const k in response.data) {
-        if (k) {
-          currMsg[k] = response.data[k];
-        }
-      }
-      const msg = new LocaleMsg(lang, currMsg);
-      i18n.setLocaleMessage(msg.lang, msg.messages);
-    });
-  }
-};
-
 const setLanguage = (to: any): string => {
   let lang = to.params.lang;
   if (!lang || supportedLangs.indexOf(to.params.lang) < 0) {
@@ -108,14 +72,6 @@ const setLanguage = (to: any): string => {
   return lang;
 };
 
-
-const checkPageExist = (to: any): boolean => {
-  const resolvedRoute = router.resolve({name: to.name, params: to.params});
-  if (to.name === null || resolvedRoute.resolved.matched.length === 0) {
-    return false;
-  }
-  return true;
-};
 
 const refreshAsync = async (): Promise<boolean> => {
   return await store.dispatch('refresh');
@@ -129,13 +85,30 @@ const getTargetRoute = (urlTo: any, to: any): any => {
   }
 };
 
-const getTargetAction = (to: any): EnumAction => {
-  const action = to.name.split('_');
-  if ( EnumActionLocale.indexOf(action) > 0) {
-    return EnumActionLocale.indexOf(action);
-  } else {
-    return EnumAction.Query;
-  }
+
+// setting routing gurad ref: https://router.vuejs.org/guide/advanced/navigation-guards.html
+const SetRouteGuard = () => {
+  router.beforeEach(async (to: any, from: any, next: any) => {
+    const lang = setLanguage(to);
+    if (store.getters.user.userName === undefined) {  // access withoout user
+      if (to.path === '/zh-tw/login') {
+        next();
+      } else if (!store.getters.loginNow && !await refreshAsync()) {
+        store.commit('setLoginNow', true);
+        store.commit('setUrlTo', to);
+        store.commit('setErrorSource', EnumNoPermissionErrorSource.FromURL);
+        next('/' + lang + '/login');
+      } else {
+        store.commit('setErrorSource', EnumNoPermissionErrorSource.FromURL);
+        const target = getTargetRoute(store.getters.urlTo, to);
+        store.commit('setUrlTo', null);
+        next('/' + lang + target.path.slice(target.path.indexOf('/', 2)));
+      }
+    } else {    // access with user
+        next();
+    }
+  });
+
 };
 
 const i18n = new VueI18n({
@@ -146,4 +119,4 @@ const i18n = new VueI18n({
   messages: loadLocalMessages(),
 });
 
-export { supportedLangs, i18n, loadLanguageAsync };
+export { supportedLangs, i18n, SetRouteGuard };

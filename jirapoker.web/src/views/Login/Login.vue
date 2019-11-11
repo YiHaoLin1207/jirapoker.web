@@ -154,12 +154,8 @@ export default Vue.extend({
       let isOk: boolean = false;
       const valdation = await vm.validate('jiraUser', vm.user.jiraUser);
       if (isNull(vm.user.jiraUser) || isNull(vm.user.jiraToken) || !valdation) {
-        console.log('success')
-        console.log(vm.user.jiraUser)
-        console.log(vm.user.jiraToken)
         return;
       }
-      console.log('success')
 
       try {
         vm.isLoading = true;

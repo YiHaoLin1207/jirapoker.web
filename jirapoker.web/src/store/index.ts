@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import app from './module/app';
 import user from './module/user';
+import routeRecord from './module/routeRecord';
 
 Vue.use(Vuex);
 
@@ -19,5 +20,6 @@ export default new Vuex.Store({
   modules: {
     app,
     user,
+    routeRecord,
   },
 });

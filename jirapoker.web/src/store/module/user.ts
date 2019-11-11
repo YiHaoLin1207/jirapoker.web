@@ -81,9 +81,11 @@ export default {
      * @param {{ commit: any, state: any}} { commit, dispatch }
      * @returns {Promise<boolean>}
      */
-    async refresh( { commit, dispatch }: { commit: any, dispatch: any}) {
+    async refresh( { state, dispatch }: { state: any, dispatch: any}) {
       const isOk: boolean = true;
-
+      // if (!state.user.userName) {
+      //  return !isOk;
+      // }
       // Get permissions
       await dispatch('setSideMenu');
 

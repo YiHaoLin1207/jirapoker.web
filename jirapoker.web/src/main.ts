@@ -28,7 +28,7 @@ import VueForm from 'vue-form';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import Loading from 'vue-loading-overlay';
 /* vue-i18n */
-import { i18n } from './modules/i18n';
+import { i18n, SetRouteGuard } from './modules/i18n';
 /* Global css */
 import './index.less';
 /* Directives */
@@ -51,6 +51,8 @@ Vue.use(VueForm);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'footerPagination');
 Vue.use(Loading, {isLoading: false}, {});
 
+/* Global setting */
+/* SetRouteGuard(); */
 
 new Vue({
   router,

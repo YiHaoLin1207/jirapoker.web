@@ -24,8 +24,8 @@ export default {
   },
   mutations: {
     setMenu(state: any, route: any) {
-      const prunedMenuNodes: MenuNode[] = MENUS.map((x) => JSON.parse(JSON.stringify(x)));
-      state.menuList = prunedMenuNodes;
+      const menuNodes: MenuNode[] = MENUS.map((x) => JSON.parse(JSON.stringify(x)));
+      state.menuList = menuNodes;
     },
     setBreadCrumb(state: any, targetRoute: any) {
       // Search menu node by id or name
@@ -59,7 +59,6 @@ export default {
 
         state.breadCrumbList = [];
         state.breadCrumbList.push(state.homeMenu);
-
         const id = targetRoute.meta.pageId.toString();
         const idLength = id.length;
         let currentId = 0;
