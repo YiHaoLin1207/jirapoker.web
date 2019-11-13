@@ -1,4 +1,4 @@
-import { Issue } from '@/classes/apiModel';
+import { Sprint } from '@/classes/apiModel';
 import axios from '@/modules/axios.factory';
 import { AxiosResponse } from 'axios';
 
@@ -11,15 +11,9 @@ export default class JiraPokerService {
    * @returns {Promise<Issue[]>}
    * @memberof JiraPokerService
    */
-  public async getTISIssuesInSprints(): Promise<Issue[]> {
-    const url = '/api/CTIS/GetIssuesInSprints';
+  public async getIssuesInActiveAndFutureSprints(boardName: string): Promise<Sprint[]> {
+    const url = `/api/IssuesInActiveAndFutureSprints/${boardName}`;
     const res: AxiosResponse<any> = await axios.get(url);
     return res.data;
   }
-  public async getDIRIssuesInSprints(): Promise<Issue[]> {
-    const url = '/api/DIR/GetIssuesInSprints';
-    const res: AxiosResponse<any> = await axios.get(url);
-    return res.data;
-  }
-
 }

@@ -40,7 +40,6 @@ export default Vue.extend({
   data() {
     return {
       isShowEstimationSelectList: false,
-      issues: [] as Issue[],
       sprints: [] as Sprint[],
       estimatedStoryPoint: null as any,
       currentIssue: new Issue() as Issue,
@@ -66,27 +65,6 @@ export default Vue.extend({
       const vm = this;
       issue.estimatedStoryPoint = estimatedStoryPoint;
     },
-    setSprints(issues: Issue[]) {
-      const vm = this;
-      let sprintNames: string[] = [];
-      issues.forEach(issue => {
-        if (!sprintNames.includes(issue.sprintName)) {
-          sprintNames.push(issue.sprintName)
-          sprintNames.sort()
-        };
-      });
-      sprintNames.forEach(sprintName => {
-        let sprint = new Sprint({ sprintName: sprintName, issues: [] as Issue[]});
-        this.sprints.push(sprint);
-      });
-      this.sprints.forEach(sprint => {
-        issues.forEach((issue, index) => {
-          if(issue.sprintName === sprint.sprintName) {
-            sprint.issues.push(issue);
-          };
-        });
-      });
-    }
   },
   async mounted() {
   },
@@ -94,10 +72,8 @@ export default Vue.extend({
   async created() {
     const vm = this;
     const jiraPokerService = new JiraPokerService();
-    let TISIssues: Issue[] = await jiraPokerService.getTISIssuesInSprints();
-    let DIRIssues: Issue[] = await jiraPokerService.getDIRIssuesInSprints();
-    vm.issues = TISIssues.concat(DIRIssues)
-    this.setSprints(vm.issues);
+    let sprints: Sprint[] = await jiraPokerService.getIssuesInActiveAndFutureSprints('product & DevOps Infra');
+    vm.sprints = sprints;
   },
 });
 </script>
