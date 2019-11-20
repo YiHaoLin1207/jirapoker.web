@@ -4,6 +4,7 @@ import BaseLocaleEntity from './BaseLocaleEntity';
 import MapLang from './MapLang';
 import Issue from './Issue';
 import Sprint from './Sprint';
+import EstimationResult from './EstimationResult';
 
 export {
   BaseEntity,
@@ -12,4 +13,5 @@ export {
   MapLang,
   Issue,
   Sprint,
+  EstimationResult,
 };

@@ -7,7 +7,7 @@
           <div class="estimation-sub-title">
           Estimation
           </div>
-          <select id="inputState" class="form-control" v-model="currentIssue.estimatedStoryPoint" @change="setIssueIsEstimated(currentIssue)">
+          <select id="inputState" class="form-control" v-model="currentIssue.estimatedStoryPoint" @change="setIssueIsEstimated(currentIssue); insertIssueEstimationResult(currentIssue.issueKey, user.userName, currentIssue.estimatedStoryPoint)">
             <option v-for="storyPoint in storyPoints" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
           </select>
         </div>
@@ -16,8 +16,8 @@
             {{ sprint.sprintName}}&emsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
           </div>
           <div v-for="issue in sprint.issues" :key="issue.issueKey">
-            <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue(issue); isShowEstimationSelectList = true;">
-              <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}&emsp;<span class="badge badge-success" v-show="issue.isEstimated">Estimated</span><span class="badge badge-primary badge-pill">{{ issue.storyPoint}}</span>
+            <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue(issue); isShowEstimationSelectList = true; isShowIssueDetail = true;">
+              <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}&emsp;<span class="badge badge-success" v-show="issue.isEstimated">Estimated</span><span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
             </button>
           </div>
           <br><br>
@@ -30,8 +30,10 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue';
-import { Issue, Sprint } from '@/classes/apiModel';
+import { Issue, Sprint, EstimationResult } from '@/classes/apiModel';
 import { JiraPokerService } from '@/services';
+import { UserProfile } from '../../classes/model';
+import { mapGetters } from 'vuex';
 
 export default Vue.extend({
   name: 'JiraPoker', 
@@ -40,6 +42,7 @@ export default Vue.extend({
   data() {
     return {
       isShowEstimationSelectList: false,
+      isShowIssueDetail: false,
       sprints: [] as Sprint[],
       estimatedStoryPoint: null as any,
       currentIssue: new Issue() as Issue,
@@ -47,6 +50,9 @@ export default Vue.extend({
     };
   },
   computed: {
+    ...mapGetters({
+      user: 'user',
+    }),
   },
   methods: {
     setIssueIsEstimated(issue: Issue) {
@@ -65,6 +71,11 @@ export default Vue.extend({
       const vm = this;
       issue.estimatedStoryPoint = estimatedStoryPoint;
     },
+    insertIssueEstimationResult(issueKey: string, userName: string, estimatedStoryPoint: string) {
+      const estimationResult: EstimationResult = {issueKey, userName, estimatedStoryPoint};
+      const jiraPokerService = new JiraPokerService();
+      jiraPokerService.insertIssueEstimationResult(estimationResult);
+    }
   },
   async mounted() {
   },
