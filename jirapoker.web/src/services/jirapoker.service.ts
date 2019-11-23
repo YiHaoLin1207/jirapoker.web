@@ -12,7 +12,7 @@ export default class JiraPokerService {
    * @memberof JiraPokerService
    */
   public async getIssuesInActiveAndFutureSprints(boardName: string): Promise<Sprint[]> {
-    const url = `/api/IssuesInActiveAndFutureSprints/${boardName}`;
+    const url = `/api/issue/${boardName}/active-and-future-sprints`;
     const res: AxiosResponse<any> = await axios.get(url);
     return res.data;
   }
@@ -25,7 +25,7 @@ export default class JiraPokerService {
    * @memberof JiraPokerService
    */
   public async insertIssueEstimationResult(payload: EstimationResult): Promise<any> {
-    const url = '/api/InsertIssueEstimationResult';
+    const url = '/api/issue/estimation-result';
     const res: AxiosResponse<any> = await axios.post(url, payload);
     return res;
   }
