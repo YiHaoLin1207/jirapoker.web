@@ -54,6 +54,11 @@ export default Vue.extend({
       user: 'user',
     }),
   },
+  sockets: {
+    issueEstimatedResults(result: any) {
+      console.log(result)
+    }
+  },
   methods: {
     setIssueIsEstimated(issue: Issue) {
       if (issue.estimatedStoryPoint !== "") {
@@ -75,6 +80,7 @@ export default Vue.extend({
       const estimationResult: EstimationResult = {issueKey, userName, estimatedStoryPoint};
       const jiraPokerService = new JiraPokerService();
       jiraPokerService.insertIssueEstimationResult(estimationResult);
+      console.log(this.$socket.client)
     }
   },
   async mounted() {

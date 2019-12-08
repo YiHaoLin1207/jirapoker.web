@@ -34,6 +34,11 @@ import './index.less';
 /* Directives */
 import '@/directives';
 
+import VueSocketIOExt from 'vue-socket.io-extended';
+import io from 'socket.io-client';
+const baseUrl: string = process.env.VUE_APP_HOST_BACKEND_URL!;
+const socket = io(baseUrl);
+
 /* Global Vue config */
 Vue.config.productionTip = false;
 /* Plugins */
@@ -50,6 +55,7 @@ Vue.use(iView, {locale});
 Vue.use(VueForm);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'footerPagination');
 Vue.use(Loading, {isLoading: false}, {});
+Vue.use(VueSocketIOExt, socket, {store});
 
 /* Global setting */
 /* SetRouteGuard(); */

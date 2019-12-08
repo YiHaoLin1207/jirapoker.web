@@ -30,7 +30,7 @@ axios.interceptors.request.use( (config: AxiosRequestConfig) => {
   }
 
   // Base Url
-  config.baseURL = 'http://localhost:80/';
+  config.baseURL = process.env.VUE_APP_HOST_BACKEND_URL;
 
   // Headers
   config.headers = {

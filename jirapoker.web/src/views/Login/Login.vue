@@ -95,6 +95,12 @@ export default Vue.extend({
       versionNumber: VERSION_NUMBER as string,
     };
   },
+  sockets:{
+    connect() {
+      const vm = this;
+      console.log('socket connected')
+    }
+  },
   computed: {
     ...mapGetters({
       locale: 'locale',
