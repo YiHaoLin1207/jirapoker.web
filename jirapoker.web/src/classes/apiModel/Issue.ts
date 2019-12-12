@@ -1,3 +1,5 @@
+import { EstimationResult } from '@/classes/apiModel';
+
 export default class Issue {
 
     public issueKey: string;
@@ -7,6 +9,7 @@ export default class Issue {
     public sprintName: string;
     public estimatedStoryPoint: any;
     public isEstimated: boolean = false;
+    public estimationResults: EstimationResult[] | any;
     public url: string;
 
     constructor(fields?: {
@@ -15,8 +18,9 @@ export default class Issue {
       storyPoint: number,
       description: string,
       sprintName: string,
-      estimatedStoryPoint?: number;
+      estimatedStoryPoint?: any;
       isEstimated: boolean;
+      estimationResults?: EstimationResult[] | any;
       url: string,
     }) {
       if (fields) {

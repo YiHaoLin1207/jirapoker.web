@@ -40,7 +40,6 @@
     "vue-loading-overlay": "^3.2.0",
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.2",
-    "vue-socket.io": "^3.0.7",
     "vue-socket.io-extended": "^4.0.1",
     "vue-tables-2": "^1.5.45",
     "vue-typed-mixins": "^0.1.0",

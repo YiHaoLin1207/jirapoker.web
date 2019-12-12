@@ -55,7 +55,7 @@ Vue.use(iView, {locale});
 Vue.use(VueForm);
 Vue.use(ClientTable, {}, false, 'bootstrap4', 'footerPagination');
 Vue.use(Loading, {isLoading: false}, {});
-Vue.use(VueSocketIOExt, socket, {store});
+Vue.use(VueSocketIOExt, socket, { store });
 
 /* Global setting */
 /* SetRouteGuard(); */

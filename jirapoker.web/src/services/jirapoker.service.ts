@@ -29,4 +29,17 @@ export default class JiraPokerService {
     const res: AxiosResponse<any> = await axios.post(url, payload);
     return res;
   }
+
+  /**
+   * GetIssueEstimationResults
+   *
+   * @param issueKey: string
+   * @returns {Promise<any}
+   * @memberof JiraPokerService
+   */
+  public async getIssueEstimationResults(issueKey: string): Promise<EstimationResult[] | []> {
+    const url = `/api/issue/${issueKey}/estimation-results`;
+    const res: AxiosResponse<any> = await axios.get(url);
+    return res.data;
+  }
 }

@@ -12,7 +12,7 @@ export default class AuthService {
    * @memberof AccountService
    */
   public async signInAsync(account: Account): Promise<any> {
-    const url = '/api/auth/SignIn';
+    const url = '/api/auth/sign-in';
     const res: AxiosResponse<any> = await axios.post(url, account);
     return res.data;
   }

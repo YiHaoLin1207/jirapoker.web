@@ -11,6 +11,9 @@
             <option v-for="storyPoint in storyPoints" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
           </select>
         </div>
+        <div v-for="estimationResult in currentIssue.estimationResults" v-bind:key="JSON.stringify(estimationResult)">
+          {{estimationResult}}
+        </div>
         <div v-for="sprint in sprints" :key="sprint.sprintName">
           <div class="content-title">
             {{ sprint.sprintName}}&emsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
@@ -33,7 +36,7 @@ import Vue, { PropType } from 'vue';
 import { Issue, Sprint, EstimationResult } from '@/classes/apiModel';
 import { JiraPokerService } from '@/services';
 import { UserProfile } from '../../classes/model';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 export default Vue.extend({
   name: 'JiraPoker', 
@@ -44,22 +47,19 @@ export default Vue.extend({
       isShowEstimationSelectList: false,
       isShowIssueDetail: false,
       sprints: [] as Sprint[],
-      estimatedStoryPoint: null as any,
-      currentIssue: new Issue() as Issue,
       storyPoints: ["", 0, 0.5, 1, 2, 3, 5, 8, 13, 21, 34, '?'] as any[],
     };
   },
   computed: {
     ...mapGetters({
       user: 'user',
+      currentIssue: 'currentIssue',
     }),
   },
-  sockets: {
-    issueEstimatedResults(result: any) {
-      console.log(result)
-    }
-  },
   methods: {
+    ...mapMutations({
+      setCurrentIssue: 'setCurrentIssue',
+    }),   
     setIssueIsEstimated(issue: Issue) {
       if (issue.estimatedStoryPoint !== "") {
         issue.isEstimated = true
@@ -68,30 +68,29 @@ export default Vue.extend({
         issue.isEstimated = false
       }
     },
-    setCurrentIssue(issue: Issue) {
-      const vm = this;
-      vm.currentIssue = issue;
-    },
     setEstimatedStoryPoint(issue: Issue, estimatedStoryPoint: any) {
-      const vm = this;
       issue.estimatedStoryPoint = estimatedStoryPoint;
     },
     insertIssueEstimationResult(issueKey: string, userName: string, estimatedStoryPoint: string) {
       const estimationResult: EstimationResult = {issueKey, userName, estimatedStoryPoint};
       const jiraPokerService = new JiraPokerService();
       jiraPokerService.insertIssueEstimationResult(estimationResult);
-      console.log(this.$socket.client)
+    },
+    async setSprints() {
+      const vm = this;
+      const jiraPokerService = new JiraPokerService();
+      let sprints: Sprint[] = await jiraPokerService.getIssuesInActiveAndFutureSprints('product & DevOps Infra');
+      vm.sprints = sprints;
     }
   },
   async mounted() {
+    
   },
 
   async created() {
     const vm = this;
-    const jiraPokerService = new JiraPokerService();
-    let sprints: Sprint[] = await jiraPokerService.getIssuesInActiveAndFutureSprints('product & DevOps Infra');
-    vm.sprints = sprints;
-  },
+    vm.setSprints();
+  }
 });
 </script>
 
