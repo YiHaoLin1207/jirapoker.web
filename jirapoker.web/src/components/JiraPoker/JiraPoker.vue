@@ -11,8 +11,8 @@
             <option v-for="storyPoint in storyPoints" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
           </select>
         </div>
-        <div v-for="estimationResult in currentIssue.estimationResults" v-bind:key="JSON.stringify(estimationResult)">
-          {{estimationResult}}
+        <div>
+          {{currentIssue.estimationResults}}
         </div>
         <div v-for="sprint in sprints" :key="sprint.sprintName">
           <div class="content-title">
@@ -48,18 +48,23 @@ export default Vue.extend({
       isShowIssueDetail: false,
       sprints: [] as Sprint[],
       storyPoints: ["", 0, 0.5, 1, 2, 3, 5, 8, 13, 21, 34, '?'] as any[],
+      currentIssue: new Issue() as Issue,
     };
   },
   computed: {
     ...mapGetters({
       user: 'user',
-      currentIssue: 'currentIssue',
     }),
   },
+  sockets: {
+    issueEstimationResults(results: EstimationResult[]) {
+      console.log(results);
+      console.log('hihihi')
+      this.$data.currentIssue.estimationResults = results;
+      this.$data.currentIssue = new Issue(this.$data.currentIssue);
+    }
+  },
   methods: {
-    ...mapMutations({
-      setCurrentIssue: 'setCurrentIssue',
-    }),   
     setIssueIsEstimated(issue: Issue) {
       if (issue.estimatedStoryPoint !== "") {
         issue.isEstimated = true
@@ -81,7 +86,14 @@ export default Vue.extend({
       const jiraPokerService = new JiraPokerService();
       let sprints: Sprint[] = await jiraPokerService.getIssuesInActiveAndFutureSprints('product & DevOps Infra');
       vm.sprints = sprints;
-    }
+    },
+    async setCurrentIssue(issue: Issue) {
+      const vm = this;
+      const jiraPokerService = new JiraPokerService();
+      issue.estimationResults = await jiraPokerService.getIssueEstimationResults(issue.issueKey);
+      vm.currentIssue = issue;
+      console.log('123', vm.currentIssue.estimationResults)
+    },
   },
   async mounted() {
     
@@ -90,6 +102,9 @@ export default Vue.extend({
   async created() {
     const vm = this;
     vm.setSprints();
+  },
+  updated() {
+    console.log('update')
   }
 });
 </script>
