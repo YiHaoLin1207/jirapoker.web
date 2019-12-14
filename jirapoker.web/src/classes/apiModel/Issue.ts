@@ -7,7 +7,6 @@ export default class Issue {
     public storyPoint: number;
     public description: string;
     public sprintName: string;
-    public estimatedStoryPoint: any;
     public isEstimated: boolean = false;
     public estimationResults: EstimationResult[] | any;
     public url: string;

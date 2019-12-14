@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import app from './module/app';
 import user from './module/user';
 import routeRecord from './module/routeRecord';
+import currentIssue from './module/currentIssue';
 
 Vue.use(Vuex);
 
@@ -21,5 +22,6 @@ export default new Vuex.Store({
     app,
     user,
     routeRecord,
+    currentIssue
   },
 });
