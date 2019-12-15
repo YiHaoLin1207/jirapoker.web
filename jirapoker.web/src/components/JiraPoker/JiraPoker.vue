@@ -1,34 +1,42 @@
 <template>
   <div class="container-fluid content-wrapper">
-    <br><br><br>
+    <br><br><br><br>
     <div class="container-fluid search-result-content">
       <div id=list-group class="list-group">
-        <div id="estimation-" v-show="isShowEstimationSelectList" style="position:fixed;top:5%;transform: translateY(200%);z-index: 999">
-          <div class="estimation-sub-title">
-          Estimation
-          </div>
-          <select id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="currentIssue.isEstimated = true; insertIssueEstimationResult(currentIssue.issueKey, user.userName, currentIssue.currentEstimatedStoryPoint)">
-            <option selected>{{ currentIssue.currentEstimatedStoryPoint }}</option>
-            <option v-for="storyPoint in storyPoints" v-show="currentIssue.currentEstimatedStoryPoint != storyPoint" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
-          </select>
+          <Row type="flex">
+            <div id="estimation-field" v-show="isShowEstimationSelectList">
+              <div class="estimation-sub-title">
+                Estimation
+              </div>
+              <Col span="2" order="1">                       
+                <select id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="currentIssue.isEstimated = true; insertIssueEstimationResult(currentIssue.issueKey, user.userName, user.avatarUrl, currentIssue.currentEstimatedStoryPoint)">
+                  <option selected>{{ currentIssue.currentEstimatedStoryPoint }}</option>
+                  <option v-for="storyPoint in storyPoints" v-show="currentIssue.currentEstimatedStoryPoint != storyPoint" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
+                </select>
+              </Col>
+              <Col span="1" :order="2 + index" v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.userName">         
+                <Badge :text="estimationResult.estimatedStoryPoint">
+                  <Avatar :src="estimationResult.userAvatarUrl" />
+                </Badge>
+              </Col>
+            </div>
+          </Row>      
+          <div v-for="sprint in sprints" :key="sprint.sprintName">
+            <div class="content-title">
+              {{ sprint.sprintName}}&emsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
+            </div>
+            <div v-for="issue in sprint.issues" :key="issue.issueKey">
+              <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'userName': user.userName}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
+                <Badge v-if="issueIsEstimatedByUser(issue) | issue.isEstimated" status="success" />
+                <Badge v-else status="default" />
+                <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}<span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
+              </button>
+            </div>
+            <br><br>
+          </div>   
         </div>
-        <div v-for="estimationResult in currentIssue.estimationResults" v-bind:key="estimationResult.userName">
-          {{estimationResult}}
-        </div>
-        <div v-for="sprint in sprints" :key="sprint.sprintName">
-          <div class="content-title">
-            {{ sprint.sprintName}}&emsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
-          </div>
-          <div v-for="issue in sprint.issues" :key="issue.issueKey">
-            <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'userName': user.userName}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
-              <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}&emsp;<span class="badge badge-success" v-show="issueIsEstimatedByUser(issue) | issue.isEstimated">Estimated</span><span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
-            </button>
-          </div>
-          <br><br>
-        </div>   
       </div>
     </div>
-  </div>
 
 </template>
 
@@ -71,19 +79,17 @@ export default Vue.extend({
         }
         return false;
     },  
+    insertIssueEstimationResult(issueKey: string, userName: string, userAvatarUrl: string, estimatedStoryPoint: string) {
+      const estimationResult: EstimationResult = {issueKey, userName, userAvatarUrl, estimatedStoryPoint};
+      const jiraPokerService = new JiraPokerService();
+      jiraPokerService.insertIssueEstimationResult(estimationResult);
+    },
     async setUserEstimatedIssueKeys(userName: string) {
       const vm = this;
       const jiraPokerService = new JiraPokerService();
       let estimatedIssueKeys = await jiraPokerService.getUserEstimatedIssueKeys(userName);
-      console.log(estimatedIssueKeys)
-      console.log(estimatedIssueKeys)
       vm.user.estimatedIssueKeys = estimatedIssueKeys;
     }, 
-    insertIssueEstimationResult(issueKey: string, userName: string, estimatedStoryPoint: string) {
-      const estimationResult: EstimationResult = {issueKey, userName, estimatedStoryPoint};
-      const jiraPokerService = new JiraPokerService();
-      jiraPokerService.insertIssueEstimationResult(estimationResult);
-    },
     async setSprints() {
       const vm = this;
       const jiraPokerService = new JiraPokerService();
@@ -113,8 +119,14 @@ export default Vue.extend({
       width: 70px;
       font-size: 15px;
     }
-    .estimation-sub-title {
-      font-size: 15px;
+    #estimation-field {
+      position: absolute;
+      top:18%;
+      width: 100%;
+      z-index: 9998;
+      .estimation-sub-title {
+        font-size: 15px;
+      }
     }
     .list-group-item.list-group-item-action {
       width: 70%;

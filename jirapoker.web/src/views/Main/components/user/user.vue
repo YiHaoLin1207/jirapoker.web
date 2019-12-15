@@ -2,7 +2,7 @@
   <div id="user-avatar" class="user-avatar-dropdown">
     <Dropdown trigger="click" @on-click="handleClick">
       <Badge :dot="!!messageUnreadCount">
-        <Avatar :src="avatarImgPath" />
+        <Avatar :src="user.avatarUrl" />
       </Badge>
       <Icon size="16" color="#9f9f9f" type="ios-arrow-down"></Icon>
       <DropdownMenu slot="list">
@@ -54,7 +54,6 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       user: 'user',
-      avatarImgPath: 'avatarImgPath',
     }),
   },
   methods: {

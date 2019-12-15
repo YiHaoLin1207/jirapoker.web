@@ -22,6 +22,6 @@ export default new Vuex.Store({
     app,
     user,
     routeRecord,
-    currentIssue
+    currentIssue,
   },
 });

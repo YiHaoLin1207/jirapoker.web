@@ -11,18 +11,11 @@ import store from '@/store';
 export default {
   state: {
     user: {} as UserProfile,
-    avatarImgPath: '' as string,
-    estimatedIssues: [] as Issue[],
   },
   getters: {
     user: (state: any) => state.user,
-    avatarImgPath: (state: any) => state.avatarImgPath,
-    estimatedIssues: (state: any) => state.estimatedIssues,
   },
   mutations: {
-    setAvatar(state: any, user: UserProfile) {
-      state.avatarImgPath = user.avatarUrl;
-    },
     setUser(state: any, user: UserProfile) {
       state.user = new UserProfile({
         accountId: user.accountId as string,
@@ -31,13 +24,8 @@ export default {
 
       });
     },
-    setEstimatedIssues(state: any, estimatedIssues: Issue[]) {
-      state.estimatedIssues = estimatedIssues;
-    },
     reset(state: any) {
       state.user = {};
-      state.avatarImgPath = '';
-      state.estimatedIssues = [];
     },
   },
   actions: {
@@ -56,7 +44,6 @@ export default {
 
       const userProfile: UserProfile = await auth.signInAsync(payload);
       commit('setUser', userProfile);
-      commit('setAvatar', userProfile);
       await dispatch('setSideMenu');
 
       const isSignInOk = true;
