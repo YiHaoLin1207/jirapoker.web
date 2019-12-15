@@ -28,12 +28,12 @@
             <Row type="flex">
               <Col span="1" style="padding: 12px; padding-left: 0px">
                 <div>
-                <Button icon="ios-search">Watch Result</Button>
+                  <Button @click="insertIssueStatus({issueKey: currentIssue.issueKey, isRevealed: true})" icon="ios-search">Watch Result</Button>
                 </div>
               </Col>
               <Col span="1" :style="{'position': 'absolute', 'left': '150px'}" style="padding: 12px; padding-left: 0px">
                 <div>
-                <Button icon="ios-backspace">Re-estimation</Button>
+                <Button  @click="deleteIssueStatus(currentIssue.issueKey)" icon="ios-backspace">Re-estimation</Button>
                 </div>
               </Col>
             </Row>
@@ -63,6 +63,7 @@ import { Issue, Sprint, EstimationResult } from '@/classes/apiModel';
 import { JiraPokerService } from '@/services';
 import { UserProfile } from '../../classes/model';
 import { mapGetters, mapMutations } from 'vuex';
+import { IssueStatus } from '../../classes/apiModel';
 
 export default Vue.extend({
   name: 'JiraPoker', 
@@ -100,6 +101,16 @@ export default Vue.extend({
       const estimationResult: EstimationResult = {issueKey, userName, userAvatarUrl, estimatedStoryPoint};
       const jiraPokerService = new JiraPokerService();
       jiraPokerService.insertIssueEstimationResult(estimationResult);
+    },
+    async insertIssueStatus(issueStatus: IssueStatus) {
+      const vm = this;
+      const jiraPokerService = new JiraPokerService();
+      await jiraPokerService.insertIssueStatus(issueStatus);
+    },
+    async deleteIssueStatus(issueKey: string) {
+      const vm = this;
+      const jiraPokerService = new JiraPokerService();
+      await jiraPokerService.deleteIssueStatus(issueKey);
     },
     async setUserEstimatedIssueKeys(userName: string) {
       const vm = this;

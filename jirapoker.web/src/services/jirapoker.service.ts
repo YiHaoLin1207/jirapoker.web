@@ -95,4 +95,17 @@ export default class JiraPokerService {
     const res: AxiosResponse<any> = await axios.get(url);
     return res.data;
   }
+
+  /**
+   * deleteIssueStatus
+   *
+   * @param issueKey: string
+   * @returns {Promise<boolean}
+   * @memberof JiraPokerService
+   */
+  public async deleteIssueStatus(issueKey: string): Promise<any> {
+    const url = `/api/issue/${issueKey}/status`;
+    const res: AxiosResponse<any> = await axios.delete(url);
+    return res;
+  }
 }
