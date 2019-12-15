@@ -42,4 +42,30 @@ export default class JiraPokerService {
     const res: AxiosResponse<any> = await axios.get(url);
     return res.data;
   }
+  /**
+   * getIssueEstimatedStoryPointByUser
+   *
+   * @param issueKey: string
+   * @param userName: string
+   * @returns {Promise<any}
+   * @memberof JiraPokerService
+   */
+  public async getIssueEstimatedStoryPointByUser(issueKey: string, userName: string): Promise<string> {
+    const url = `/api/issue/estimated-story-point/${issueKey}/${userName}`;
+    const res: AxiosResponse<any> = await axios.get(url);
+    return res.data;
+  }
+
+  /**
+   * getUserEstimatedIssueKeys
+   *
+   * @param userName: string
+   * @returns {Promise<any}
+   * @memberof JiraPokerService
+   */
+  public async getUserEstimatedIssueKeys(userName: string): Promise<string[]> {
+    const url = `/api/user/${userName}/estimated-issue-keys`;
+    const res: AxiosResponse<any> = await axios.get(url);
+    return res.data;
+  }
 }

@@ -11,16 +11,16 @@ export default {
   mutations: {
     SOCKET_ISSUEESTIMATIONRESULTS(state: any, results: EstimationResult[]) {
         state.currentIssue.estimationResults = results;
+        // This implementation should be fixed in the future to make Vue can watch its modification automatically
         state.currentIssue = new Issue(state.currentIssue);
-        console.log(state.currentIssue.estimationResults)
     },
-    async setCurrentIssue(state: any, issue: Issue) {
+    async setCurrentIssue(state: any, payload: any) {
       const jiraPokerService = new JiraPokerService();
-      issue.estimationResults = await jiraPokerService.getIssueEstimationResults(issue.issueKey);
-      state.currentIssue = issue;
-      console.log('123', state.currentIssue.estimationResults)
+      payload.issue.estimationResults = await jiraPokerService.getIssueEstimationResults(payload.issue.issueKey);
+      payload.issue.currentEstimatedStoryPoint = await jiraPokerService.getIssueEstimatedStoryPointByUser(payload.issue.issueKey, payload.userName);
+      state.currentIssue = payload.issue;
     },
   },
   actions: {
-    },
+  },
 };

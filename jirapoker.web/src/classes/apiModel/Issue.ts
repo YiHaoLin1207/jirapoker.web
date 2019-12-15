@@ -8,7 +8,8 @@ export default class Issue {
     public description: string;
     public sprintName: string;
     public isEstimated: boolean = false;
-    public estimationResults: EstimationResult[] | any;
+    public currentEstimatedStoryPoint: string = '';
+    public estimationResults: EstimationResult[] = [];
     public url: string;
 
     constructor(fields?: {
@@ -17,9 +18,9 @@ export default class Issue {
       storyPoint: number,
       description: string,
       sprintName: string,
-      estimatedStoryPoint?: any;
       isEstimated: boolean;
-      estimationResults?: EstimationResult[] | any;
+      currentEstimatedStoryPoint: string;
+      estimationResults?: EstimationResult[];
       url: string,
     }) {
       if (fields) {

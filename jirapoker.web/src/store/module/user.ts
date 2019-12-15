@@ -1,4 +1,4 @@
-import { Account } from '@/classes/apiModel';
+import { Account, Issue } from '@/classes/apiModel';
 import { EnumAction, EnumActionStatus } from '@/classes/enum';
 import { AuthService } from '@/services';
 import { UserProfile } from '@/classes/model';
@@ -12,10 +12,12 @@ export default {
   state: {
     user: {} as UserProfile,
     avatarImgPath: '' as string,
+    estimatedIssues: [] as Issue[],
   },
   getters: {
     user: (state: any) => state.user,
     avatarImgPath: (state: any) => state.avatarImgPath,
+    estimatedIssues: (state: any) => state.estimatedIssues,
   },
   mutations: {
     setAvatar(state: any, user: UserProfile) {
@@ -29,9 +31,13 @@ export default {
 
       });
     },
+    setEstimatedIssues(state: any, estimatedIssues: Issue[]) {
+      state.estimatedIssues = estimatedIssues;
+    },
     reset(state: any) {
       state.user = {};
       state.avatarImgPath = '';
+      state.estimatedIssues = [];
     },
   },
   actions: {

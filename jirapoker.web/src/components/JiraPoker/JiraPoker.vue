@@ -7,9 +7,9 @@
           <div class="estimation-sub-title">
           Estimation
           </div>
-          <select id="inputState" class="form-control" v-model="currentIssue.estimatedStoryPoint" @change="setIssueIsEstimated(currentIssue); insertIssueEstimationResult(currentIssue.issueKey, user.userName, currentIssue.estimatedStoryPoint)">
-            <option selected>{{ currentIssue.estimatedStoryPoint }}</option>
-            <option v-for="storyPoint in storyPoints" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
+          <select id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="currentIssue.isEstimated = true; insertIssueEstimationResult(currentIssue.issueKey, user.userName, currentIssue.currentEstimatedStoryPoint)">
+            <option selected>{{ currentIssue.currentEstimatedStoryPoint }}</option>
+            <option v-for="storyPoint in storyPoints" v-show="currentIssue.currentEstimatedStoryPoint != storyPoint" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
           </select>
         </div>
         <div v-for="estimationResult in currentIssue.estimationResults" v-bind:key="estimationResult.userName">
@@ -20,8 +20,8 @@
             {{ sprint.sprintName}}&emsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
           </div>
           <div v-for="issue in sprint.issues" :key="issue.issueKey">
-            <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue(issue); isShowEstimationSelectList = true; isShowIssueDetail = true;">
-              <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}&emsp;<span class="badge badge-success" v-show="issue.isEstimated">Estimated</span><span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
+            <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'userName': user.userName}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
+              <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}&emsp;<span class="badge badge-success" v-show="issueIsEstimatedByUser(issue) | issue.isEstimated">Estimated</span><span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
             </button>
           </div>
           <br><br>
@@ -49,7 +49,8 @@ export default Vue.extend({
       isShowIssueDetail: false,
       sprints: [] as Sprint[],
       // Change to all the value to string
-      storyPoints: ["", 0, 0.5, 1, 2, 3, 5, 8, 13, 21, 34, '?'] as any[],
+      storyPoints: ['0', '0.5', '1', '2', '3', '5', '8', '13', '21', '34', '?'] as string[],
+
     };
   },
   computed: {
@@ -61,18 +62,23 @@ export default Vue.extend({
   methods: {
     ...mapMutations({
       setCurrentIssue: 'setCurrentIssue',
-    }),   
-    setIssueIsEstimated(issue: Issue) {
-      if (issue.estimatedStoryPoint !== "") {
-        issue.isEstimated = true
-      }
-      else {
-        issue.isEstimated = false
-      }
-    },
-    setEstimatedStoryPoint(issue: Issue, estimatedStoryPoint: any) {
-      issue.estimatedStoryPoint = estimatedStoryPoint;
-    },
+    }),
+    issueIsEstimatedByUser(issue: Issue) {
+        const vm = this;
+        if (vm.user.estimatedIssueKeys.includes(issue.issueKey)) {
+          issue.isEstimated = true;
+          return true;
+        }
+        return false;
+    },  
+    async setUserEstimatedIssueKeys(userName: string) {
+      const vm = this;
+      const jiraPokerService = new JiraPokerService();
+      let estimatedIssueKeys = await jiraPokerService.getUserEstimatedIssueKeys(userName);
+      console.log(estimatedIssueKeys)
+      console.log(estimatedIssueKeys)
+      vm.user.estimatedIssueKeys = estimatedIssueKeys;
+    }, 
     insertIssueEstimationResult(issueKey: string, userName: string, estimatedStoryPoint: string) {
       const estimationResult: EstimationResult = {issueKey, userName, estimatedStoryPoint};
       const jiraPokerService = new JiraPokerService();
@@ -92,6 +98,7 @@ export default Vue.extend({
   async created() {
     const vm = this;
     vm.setSprints();
+    vm.setUserEstimatedIssueKeys(vm.user.userName);
   },
   async updated() {
     console.log('updated')

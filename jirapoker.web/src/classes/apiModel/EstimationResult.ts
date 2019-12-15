@@ -6,7 +6,7 @@ export default class EstimationResult {
   constructor(fields?: {
     issueKey: string;
     userName: string;
-    estimatedStoryPoint: any;
+    estimatedStoryPoint: string;
   }) {
     if (fields) {
       Object.assign(this, fields);
