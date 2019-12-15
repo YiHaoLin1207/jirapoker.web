@@ -15,10 +15,14 @@ export default {
         state.currentIssue = new Issue(state.currentIssue);
     },
     async setCurrentIssue(state: any, payload: any) {
-      const jiraPokerService = new JiraPokerService();
-      payload.issue.estimationResults = await jiraPokerService.getIssueEstimationResults(payload.issue.issueKey);
-      payload.issue.currentEstimatedStoryPoint = await jiraPokerService.getIssueEstimatedStoryPointByUser(payload.issue.issueKey, payload.userName);
-      state.currentIssue = payload.issue;
+      if (payload.issue !== undefined && payload.userName !== undefined && payload.statusName !== undefined) {
+        const jiraPokerService = new JiraPokerService();
+        payload.issue.estimationResults = await jiraPokerService.getIssueEstimationResults(payload.issue.issueKey);
+        payload.issue.currentEstimatedStoryPoint = await jiraPokerService.getIssueEstimatedStoryPointByUser(payload.issue.issueKey, payload.userName);
+        const issueRevealedStatus = await jiraPokerService.getIssueStatus(payload.issue.issueKey, payload.statusName);
+        state.currentIssue = payload.issue;
+        state.currentIssue.isRevealed = issueRevealedStatus;
+      }
     },
   },
   actions: {

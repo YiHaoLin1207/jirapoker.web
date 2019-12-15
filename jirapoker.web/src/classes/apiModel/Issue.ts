@@ -8,7 +8,6 @@ export default class Issue {
     public description: string;
     public sprintName: string;
     public isEstimated: boolean = false;
-    public isRevealedResult: boolean = false;
     public currentEstimatedStoryPoint: string = '';
     public estimationResults: EstimationResult[] = [];
     public url: string;
@@ -20,7 +19,6 @@ export default class Issue {
       description: string,
       sprintName: string,
       isEstimated: boolean;
-      isRevealedResult: boolean;
       currentEstimatedStoryPoint: string;
       estimationResults?: EstimationResult[];
       url: string,

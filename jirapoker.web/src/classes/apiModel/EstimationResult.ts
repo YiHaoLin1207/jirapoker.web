@@ -1,4 +1,3 @@
-import { UserProfile } from '@/classes/model';
 
 export default class EstimationResult {
   public issueKey: string;
@@ -11,6 +10,7 @@ export default class EstimationResult {
     userName: string;
     userAvatarUrl: string;
     estimatedStoryPoint: string;
+
   }) {
     if (fields) {
       Object.assign(this, fields);

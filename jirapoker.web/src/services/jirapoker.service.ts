@@ -1,4 +1,4 @@
-import { Sprint, EstimationResult } from '@/classes/apiModel';
+import { Sprint, EstimationResult, IssueStatus } from '@/classes/apiModel';
 import axios from '@/modules/axios.factory';
 import { AxiosResponse } from 'axios';
 
@@ -60,11 +60,38 @@ export default class JiraPokerService {
    * getUserEstimatedIssueKeys
    *
    * @param userName: string
-   * @returns {Promise<any}
+   * @returns {Promise<string[]}
    * @memberof JiraPokerService
    */
   public async getUserEstimatedIssueKeys(userName: string): Promise<string[]> {
     const url = `/api/user/${userName}/estimated-issue-keys`;
+    const res: AxiosResponse<any> = await axios.get(url);
+    return res.data;
+  }
+
+  /**
+   * insetIssueStatus
+   *
+   * @param payload: IssueStatus
+   * @returns {Promise<any}
+   * @memberof JiraPokerService
+   */
+  public async insertIssueStatus(payload: IssueStatus): Promise<any> {
+    const url = `/api/issue/status`;
+    const res: AxiosResponse<any> = await axios.post(url, payload);
+    return res;
+  }
+
+  /**
+   * getIssueStatus
+   *
+   * @param issueKey: string
+   * @param statusName: string
+   * @returns {Promise<boolean}
+   * @memberof JiraPokerService
+   */
+  public async getIssueStatus(issueKey: string, statusName: string): Promise<boolean> {
+    const url = `/api/issue/${issueKey}/status/${statusName}`;
     const res: AxiosResponse<any> = await axios.get(url);
     return res.data;
   }

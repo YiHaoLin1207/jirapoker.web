@@ -1,32 +1,49 @@
 <template>
   <div class="container-fluid content-wrapper">
-    <br><br><br><br>
-    <div class="container-fluid search-result-content">
-      <div id=list-group class="list-group">
-          <Row type="flex">
-            <div id="estimation-field" v-show="isShowEstimationSelectList">
-              <div class="estimation-sub-title">
-                Estimation
+    <br><br><br><br><br><br><br>
+      <div class="container-fluid search-result-content">
+        <div id=list-group class="list-group">          
+          <div id="estimation-field-wrapper" v-show="isShowEstimationSelectList">
+            <Row type="flex">
+            <div id="estimation-field">
+              <div class="content-title">
+              {{ currentIssue.issueKey }}
               </div>
-              <Col span="2" order="1">                       
+              <Col span="1">                       
                 <select id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="currentIssue.isEstimated = true; insertIssueEstimationResult(currentIssue.issueKey, user.userName, user.avatarUrl, currentIssue.currentEstimatedStoryPoint)">
                   <option selected>{{ currentIssue.currentEstimatedStoryPoint }}</option>
                   <option v-for="storyPoint in storyPoints" v-show="currentIssue.currentEstimatedStoryPoint != storyPoint" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
                 </select>
-              </Col>
-              <Col span="1" :order="2 + index" v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.userName">         
-                <Badge :text="estimationResult.estimatedStoryPoint">
+              </Col>      
+              <Col span="1" :style="{'position': 'absolute', 'left': 90 + 50 * index + 'px'}" v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.userName">         
+                <Badge v-if="currentIssue.isRevealed" :text="estimationResult.estimatedStoryPoint">
+                  <Avatar :src="estimationResult.userAvatarUrl" />
+                </Badge>
+                <Badge v-else text="X">
                   <Avatar :src="estimationResult.userAvatarUrl" />
                 </Badge>
               </Col>
             </div>
-          </Row>      
+            </Row>
+            <Row type="flex">
+              <Col span="1" style="padding: 12px; padding-left: 0px">
+                <div>
+                <Button icon="ios-search">Watch Result</Button>
+                </div>
+              </Col>
+              <Col span="1" :style="{'position': 'absolute', 'left': '150px'}" style="padding: 12px; padding-left: 0px">
+                <div>
+                <Button icon="ios-backspace">Re-estimation</Button>
+                </div>
+              </Col>
+            </Row>
+          </div>                
           <div v-for="sprint in sprints" :key="sprint.sprintName">
             <div class="content-title">
               {{ sprint.sprintName}}&emsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
             </div>
             <div v-for="issue in sprint.issues" :key="issue.issueKey">
-              <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'userName': user.userName}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
+              <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'userName': user.userName, 'statusName': 'isRevealed'}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
                 <Badge v-if="issueIsEstimatedByUser(issue) | issue.isEstimated" status="success" />
                 <Badge v-else status="default" />
                 <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}<span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
@@ -119,13 +136,16 @@ export default Vue.extend({
       width: 70px;
       font-size: 15px;
     }
-    #estimation-field {
+    #estimation-field-wrapper {
       position: absolute;
       top:18%;
-      width: 100%;
-      z-index: 9998;
+      width: 80%;
+      overflow: hidden;
+      z-index:9998;
       .estimation-sub-title {
         font-size: 15px;
+        position: relative;
+        left: 1.5%;
       }
     }
     .list-group-item.list-group-item-action {
