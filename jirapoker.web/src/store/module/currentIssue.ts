@@ -1,6 +1,5 @@
 import { EstimationResult, Issue, IssueStatus } from '@/classes/apiModel';
 import { JiraPokerService } from '@/services';
-import { stringify } from 'querystring';
 
 export default {
   state: {
@@ -15,9 +14,24 @@ export default {
         // This implementation should be fixed in the future to make Vue can watch its modification automatically
         state.currentIssue = new Issue(state.currentIssue);
     },
-    SOCKET_ISSUESTATUS(state: any, issueStatus: IssueStatus) {
+    SOCKET_INSERTISSUESTATUS(state: any, issueStatus: IssueStatus) {
       if (issueStatus.issueKey === state.currentIssue.issueKey) {
         state.currentIssue.isRevealed = issueStatus.isRevealed;
+        // This implementation should be fixed in the future to make Vue can watch its modifica
+        state.currentIssue = new Issue(state.currentIssue);
+      }
+    },
+    SOCKET_DELETEISSUEESTIMATIONRESULTS(state: any, issueKey: string) {
+      if (issueKey === state.currentIssue.issueKey) {
+        state.currentIssue.estimationResults = [];
+        state.currentIssue.currentEstimatedStoryPoint = '';
+        // This implementation should be fixed in the future to make Vue can watch its modifica
+        state.currentIssue = new Issue(state.currentIssue);
+      }
+    },
+    SOCKET_DELETEISSUESTATUS(state: any, issueKey: string) {
+      if (issueKey === state.currentIssue.issueKey) {
+        state.currentIssue.isRevealed = false;
         // This implementation should be fixed in the future to make Vue can watch its modifica
         state.currentIssue = new Issue(state.currentIssue);
       }

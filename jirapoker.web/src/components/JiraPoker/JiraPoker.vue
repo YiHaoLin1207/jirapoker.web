@@ -19,21 +19,21 @@
                 <Badge v-if="currentIssue.isRevealed" :text="estimationResult.estimatedStoryPoint">
                   <Avatar :src="estimationResult.userAvatarUrl" />
                 </Badge>
-                <Badge v-else text="X">
+                <Badge v-else text="OK">
                   <Avatar :src="estimationResult.userAvatarUrl" />
                 </Badge>
               </Col>
             </div>
             </Row>
             <Row type="flex">
-              <Col span="1" style="padding: 12px; padding-left: 0px">
+              <Col span="1" style="padding: 12px; padding-left: 3px">
                 <div>
-                  <Button @click="insertIssueStatus({issueKey: currentIssue.issueKey, isRevealed: true})" icon="ios-search">Watch Result</Button>
+                  <Button :disabled="currentIssue.isRevealed === true" @click="insertIssueStatus({issueKey: currentIssue.issueKey, isRevealed: true})" icon="ios-search">Watch Result</Button>
                 </div>
               </Col>
               <Col span="1" :style="{'position': 'absolute', 'left': '150px'}" style="padding: 12px; padding-left: 0px">
                 <div>
-                <Button  @click="deleteIssueStatus(currentIssue.issueKey)" icon="ios-backspace">Re-estimation</Button>
+                <Button :disabled="currentIssue.isRevealed === false" @click="deleteIssueEstimationResults(currentIssue.issueKey); deleteIssueStatus(currentIssue.issueKey);" icon="ios-backspace">Re-estimation</Button>
                 </div>
               </Col>
             </Row>
@@ -44,7 +44,7 @@
             </div>
             <div v-for="issue in sprint.issues" :key="issue.issueKey">
               <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'userName': user.userName, 'statusName': 'isRevealed'}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
-                <Badge v-if="issueIsEstimatedByUser(issue) | issue.isEstimated" status="success" />
+                <Badge v-if="user.estimatedIssueKeys[issue.issueKey]" status="success" />
                 <Badge v-else status="default" />
                 <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}<span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
               </button>
@@ -89,34 +89,33 @@ export default Vue.extend({
     ...mapMutations({
       setCurrentIssue: 'setCurrentIssue',
     }),
-    issueIsEstimatedByUser(issue: Issue) {
-        const vm = this;
-        if (vm.user.estimatedIssueKeys.includes(issue.issueKey)) {
-          issue.isEstimated = true;
-          return true;
-        }
-        return false;
-    },  
     insertIssueEstimationResult(issueKey: string, userName: string, userAvatarUrl: string, estimatedStoryPoint: string) {
+      const vm = this;
+      vm.user.estimatedIssueKeys[issueKey] = true
       const estimationResult: EstimationResult = {issueKey, userName, userAvatarUrl, estimatedStoryPoint};
       const jiraPokerService = new JiraPokerService();
       jiraPokerService.insertIssueEstimationResult(estimationResult);
     },
     async insertIssueStatus(issueStatus: IssueStatus) {
-      const vm = this;
       const jiraPokerService = new JiraPokerService();
       await jiraPokerService.insertIssueStatus(issueStatus);
     },
     async deleteIssueStatus(issueKey: string) {
-      const vm = this;
       const jiraPokerService = new JiraPokerService();
       await jiraPokerService.deleteIssueStatus(issueKey);
+    },
+    async deleteIssueEstimationResults(issueKey: string) {
+      const vm = this;
+      vm.user.estimatedIssueKeys[issueKey] = false;
+      const jiraPokerService = new JiraPokerService();
+      await jiraPokerService.deleteIssueEstimationResults(issueKey);
     },
     async setUserEstimatedIssueKeys(userName: string) {
       const vm = this;
       const jiraPokerService = new JiraPokerService();
       let estimatedIssueKeys = await jiraPokerService.getUserEstimatedIssueKeys(userName);
       vm.user.estimatedIssueKeys = estimatedIssueKeys;
+      console.log(vm.user.estimatedIssueKeys)
     }, 
     async setSprints() {
       const vm = this;
@@ -144,6 +143,8 @@ export default Vue.extend({
   .container-fluid.search-result-content {
     width: 137%;
     .form-control {
+      position: relative;
+      left: 3px;
       width: 70px;
       font-size: 15px;
     }
@@ -153,11 +154,6 @@ export default Vue.extend({
       width: 80%;
       overflow: hidden;
       z-index:9998;
-      .estimation-sub-title {
-        font-size: 15px;
-        position: relative;
-        left: 1.5%;
-      }
     }
     .list-group-item.list-group-item-action {
       width: 70%;

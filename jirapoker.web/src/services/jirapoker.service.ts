@@ -42,6 +42,20 @@ export default class JiraPokerService {
     const res: AxiosResponse<any> = await axios.get(url);
     return res.data;
   }
+
+  /**
+   * deleteIssueEstimationResults
+   *
+   * @param issueKey: string
+   * @returns {Promise<boolean}
+   * @memberof JiraPokerService
+   */
+  public async deleteIssueEstimationResults(issueKey: string): Promise<any> {
+    const url = `/api/issue/${issueKey}/estimation-results`;
+    const res: AxiosResponse<any> = await axios.delete(url);
+    return res;
+  }
+
   /**
    * getIssueEstimatedStoryPointByUser
    *
