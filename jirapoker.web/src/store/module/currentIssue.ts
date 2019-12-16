@@ -21,14 +21,6 @@ export default {
         state.currentIssue = new Issue(state.currentIssue);
       }
     },
-    SOCKET_DELETEISSUEESTIMATIONRESULTS(state: any, issueKey: string) {
-      if (issueKey === state.currentIssue.issueKey) {
-        state.currentIssue.estimationResults = [];
-        state.currentIssue.currentEstimatedStoryPoint = '';
-        // This implementation should be fixed in the future to make Vue can watch its modifica
-        state.currentIssue = new Issue(state.currentIssue);
-      }
-    },
     SOCKET_DELETEISSUESTATUS(state: any, issueKey: string) {
       if (issueKey === state.currentIssue.issueKey) {
         state.currentIssue.isRevealed = false;

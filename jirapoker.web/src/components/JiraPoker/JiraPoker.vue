@@ -10,9 +10,11 @@
               {{ currentIssue.issueKey }}
               </div>
               <Col span="1">                       
-                <select id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="currentIssue.isEstimated = true; insertIssueEstimationResult(currentIssue.issueKey, user.userName, user.avatarUrl, currentIssue.currentEstimatedStoryPoint)">
+                <select v-if="currentIssue.isRevealed===false" id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="currentIssue.isEstimated = true; insertIssueEstimationResult(currentIssue.issueKey, user.userName, user.avatarUrl, currentIssue.currentEstimatedStoryPoint)">
                   <option selected>{{ currentIssue.currentEstimatedStoryPoint }}</option>
                   <option v-for="storyPoint in storyPoints" v-show="currentIssue.currentEstimatedStoryPoint != storyPoint" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
+                </select>
+                <select v-else id="inputState" class="form-control" :disabled="true">
                 </select>
               </Col>      
               <Col span="1" :style="{'position': 'absolute', 'left': 90 + 50 * index + 'px'}" v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.userName">         
@@ -85,6 +87,16 @@ export default Vue.extend({
       currentIssue: 'currentIssue',
     }),
   },
+  sockets: {
+    deleteIssueEstimationResults(issueKey: string) {
+      const vm = this;
+      if (issueKey === vm.$store.getters.currentIssue.issueKey) {
+        vm.$store.getters.currentIssue.estimationResults = [];
+        vm.$store.getters.currentIssue.currentEstimatedStoryPoint = '';
+        vm.$store.getters.user.estimatedIssueKeys[issueKey] = false;
+      }
+    },
+  },
   methods: {
     ...mapMutations({
       setCurrentIssue: 'setCurrentIssue',
@@ -106,7 +118,6 @@ export default Vue.extend({
     },
     async deleteIssueEstimationResults(issueKey: string) {
       const vm = this;
-      vm.user.estimatedIssueKeys[issueKey] = false;
       const jiraPokerService = new JiraPokerService();
       await jiraPokerService.deleteIssueEstimationResults(issueKey);
     },
