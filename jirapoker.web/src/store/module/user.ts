@@ -16,6 +16,10 @@ export default {
     user: (state: any) => state.user,
   },
   mutations: {
+    resetUserEstimatedIssueKey(state: any, issueKey: string) {
+      state.user.estimatedIssueKeys[issueKey] = false;
+      state.user = new UserProfile(state.user)
+    },
     setUser(state: any, user: UserProfile) {
       state.user = new UserProfile({
         accountId: user.accountId as string,

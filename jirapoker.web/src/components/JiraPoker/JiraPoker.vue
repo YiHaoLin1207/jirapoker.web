@@ -88,45 +88,49 @@ export default Vue.extend({
     }),
   },
   sockets: {
-    deleteIssueEstimationResults(issueKey: string) {
-      const vm = this;
-      if (issueKey === vm.$store.getters.currentIssue.issueKey) {
-        vm.$store.getters.currentIssue.estimationResults = [];
-        vm.$store.getters.currentIssue.currentEstimatedStoryPoint = '';
-        vm.$store.getters.user.estimatedIssueKeys[issueKey] = false;
-      }
-    },
+    ...mapMutations({
+      resetCurrentIssue: 'resetCurrentIssue',
+      resetUserEstimatedIssueKey: 'resetUserEstimatedIssueKey',
+      updateCurrentIssueEstimationResults: 'updateCurrentIssueEstimationResults',
+      updateCurrentIssueStatus: 'updateCurrentIssueStatus',
+      resetCurrentIssueStatus: 'resetCurrentIssueStatus',
+    }),
   },
   methods: {
     ...mapMutations({
       setCurrentIssue: 'setCurrentIssue',
     }),
-    insertIssueEstimationResult(issueKey: string, userName: string, userAvatarUrl: string, estimatedStoryPoint: string) {
+    async insertIssueEstimationResult(issueKey: string, userName: string, userAvatarUrl: string, estimatedStoryPoint: string) {
       const vm = this;
       vm.user.estimatedIssueKeys[issueKey] = true
       const estimationResult: EstimationResult = {issueKey, userName, userAvatarUrl, estimatedStoryPoint};
       const jiraPokerService = new JiraPokerService();
-      jiraPokerService.insertIssueEstimationResult(estimationResult);
+      await jiraPokerService.insertIssueEstimationResult(estimationResult);
+      vm.$socket.client.emit('insertIssueEstimationResult', issueKey);
     },
     async insertIssueStatus(issueStatus: IssueStatus) {
+      const vm = this;
       const jiraPokerService = new JiraPokerService();
       await jiraPokerService.insertIssueStatus(issueStatus);
+      vm.$socket.client.emit('insertIssueStatus', issueStatus);
     },
     async deleteIssueStatus(issueKey: string) {
+      const vm = this;
       const jiraPokerService = new JiraPokerService();
       await jiraPokerService.deleteIssueStatus(issueKey);
+      vm.$socket.client.emit('deleteIssueStatus', issueKey);
     },
     async deleteIssueEstimationResults(issueKey: string) {
       const vm = this;
       const jiraPokerService = new JiraPokerService();
       await jiraPokerService.deleteIssueEstimationResults(issueKey);
+      vm.$socket.client.emit('deleteIssueEstimationResults', issueKey);
     },
     async setUserEstimatedIssueKeys(userName: string) {
       const vm = this;
       const jiraPokerService = new JiraPokerService();
       let estimatedIssueKeys = await jiraPokerService.getUserEstimatedIssueKeys(userName);
       vm.user.estimatedIssueKeys = estimatedIssueKeys;
-      console.log(vm.user.estimatedIssueKeys)
     }, 
     async setSprints() {
       const vm = this;

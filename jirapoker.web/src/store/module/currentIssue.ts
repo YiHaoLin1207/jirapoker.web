@@ -9,22 +9,26 @@ export default {
     currentIssue: (state: any) => state.currentIssue,
   },
   mutations: {
-    SOCKET_ISSUEESTIMATIONRESULTS(state: any, results: EstimationResult[]) {
-        state.currentIssue.estimationResults = results;
-        // This implementation should be fixed in the future to make Vue can watch its modification automatically
-        state.currentIssue = new Issue(state.currentIssue);
-    },
-    SOCKET_INSERTISSUESTATUS(state: any, issueStatus: IssueStatus) {
-      if (issueStatus.issueKey === state.currentIssue.issueKey) {
-        state.currentIssue.isRevealed = issueStatus.isRevealed;
-        // This implementation should be fixed in the future to make Vue can watch its modifica
+    resetCurrentIssue(state: any, issueKey: string) {
+      if (issueKey === state.currentIssue.issueKey) {
+        state.currentIssue.estimationResults = [];
+        state.currentIssue.currentEstimatedStoryPoint = '';
         state.currentIssue = new Issue(state.currentIssue);
       }
     },
-    SOCKET_DELETEISSUESTATUS(state: any, issueKey: string) {
+    updateCurrentIssueEstimationResults(state: any, results: EstimationResult[]) {
+      state.currentIssue.estimationResults = results;
+      state.currentIssue = new Issue(state.currentIssue);
+    },
+    updateCurrentIssueStatus(state: any, issueStatus: IssueStatus) {
+      if (issueStatus.issueKey === state.currentIssue.issueKey) {
+        state.currentIssue.isRevealed = issueStatus.isRevealed;
+        state.currentIssue = new Issue(state.currentIssue);
+      }
+    },
+    resetCurrentIssueStatus(state: any, issueKey: string) {
       if (issueKey === state.currentIssue.issueKey) {
         state.currentIssue.isRevealed = false;
-        // This implementation should be fixed in the future to make Vue can watch its modifica
         state.currentIssue = new Issue(state.currentIssue);
       }
     },
