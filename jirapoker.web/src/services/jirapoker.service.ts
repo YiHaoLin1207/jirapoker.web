@@ -20,13 +20,15 @@ export default class JiraPokerService {
   /**
    * InsertIssueEstimationResult
    *
-   * @param payload: EstimationResult
+   * @param issueKey: string
+   * @param accountId: string
+   * @param estimatedStoryPoint: string
    * @returns {Promise<any}
    * @memberof JiraPokerService
    */
-  public async insertIssueEstimationResult(payload: EstimationResult): Promise<any> {
+  public async insertIssueEstimationResult(issueKey: string, accountId: string, estimatedStoryPoint: string): Promise<any> {
     const url = '/api/issue/estimation-result';
-    const res: AxiosResponse<any> = await axios.post(url, payload);
+    const res: AxiosResponse<any> = await axios.post(url, {issueKey, accountId, estimatedStoryPoint});
     return res;
   }
 
@@ -60,12 +62,12 @@ export default class JiraPokerService {
    * getIssueEstimatedStoryPointByUser
    *
    * @param issueKey: string
-   * @param userName: string
+   * @param accountId: string
    * @returns {Promise<any}
    * @memberof JiraPokerService
    */
-  public async getIssueEstimatedStoryPointByUser(issueKey: string, userName: string): Promise<string> {
-    const url = `/api/issue/estimated-story-point/${issueKey}/${userName}`;
+  public async getIssueEstimatedStoryPointByUser(issueKey: string, accountId: string): Promise<string> {
+    const url = `/api/issue/estimated-story-point/${issueKey}/${accountId}`;
     const res: AxiosResponse<any> = await axios.get(url);
     return res.data;
   }
@@ -73,12 +75,12 @@ export default class JiraPokerService {
   /**
    * getUserEstimatedIssueKeys
    *
-   * @param userName: string
+   * @param accountId: string
    * @returns {Promise<string[]}
    * @memberof JiraPokerService
    */
-  public async getUserEstimatedIssueKeys(userName: string): Promise<string[]> {
-    const url = `/api/user/${userName}/estimated-issue-keys`;
+  public async getUserEstimatedIssueKeys(accountId: string): Promise<string[]> {
+    const url = `/api/user/${accountId}/estimated-issue-keys`;
     const res: AxiosResponse<any> = await axios.get(url);
     return res.data;
   }

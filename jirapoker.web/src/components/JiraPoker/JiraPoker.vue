@@ -10,19 +10,19 @@
               {{ currentIssue.issueKey }}
               </div>
               <Col span="1">                       
-                <select v-if="currentIssue.isRevealed===false" id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="currentIssue.isEstimated = true; insertIssueEstimationResult(currentIssue.issueKey, user.userName, user.avatarUrl, currentIssue.currentEstimatedStoryPoint)">
+                <select v-if="currentIssue.isRevealed===false" id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="insertIssueEstimationResult(currentIssue.issueKey, user.accountId, currentIssue.currentEstimatedStoryPoint)">
                   <option selected>{{ currentIssue.currentEstimatedStoryPoint }}</option>
                   <option v-for="storyPoint in storyPoints" v-show="currentIssue.currentEstimatedStoryPoint != storyPoint" :key="storyPoint" :value="storyPoint">{{ storyPoint }}</option>
                 </select>
                 <select v-else id="inputState" class="form-control" :disabled="true">
                 </select>
               </Col>      
-              <Col span="1" :style="{'position': 'absolute', 'left': 90 + 50 * index + 'px'}" v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.userName">         
+              <Col span="1" :style="{'position': 'absolute', 'left': 90 + 50 * index + 'px'}" v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.user.accountId">         
                 <Badge v-if="currentIssue.isRevealed" :text="estimationResult.estimatedStoryPoint">
-                  <Avatar :src="estimationResult.userAvatarUrl" />
+                  <Avatar :src="estimationResult.user.avatarUrl" />
                 </Badge>
                 <Badge v-else text="OK">
-                  <Avatar :src="estimationResult.userAvatarUrl" />
+                  <Avatar :src="estimationResult.user.avatarUrl" />
                 </Badge>
               </Col>
             </div>
@@ -45,7 +45,7 @@
               {{ sprint.sprintName}}&emsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
             </div>
             <div v-for="issue in sprint.issues" :key="issue.issueKey">
-              <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'userName': user.userName, 'statusName': 'isRevealed'}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
+              <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'accountId': user.accountId, 'statusName': 'isRevealed'}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
                 <Badge v-if="user.estimatedIssueKeys[issue.issueKey]" status="success" />
                 <Badge v-else status="default" />
                 <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}<span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
@@ -94,18 +94,17 @@ export default Vue.extend({
       updateCurrentIssueEstimationResults: 'updateCurrentIssueEstimationResults',
       updateCurrentIssueStatus: 'updateCurrentIssueStatus',
       resetCurrentIssueStatus: 'resetCurrentIssueStatus',
+      updateUserEstimatedIssueKey: 'updateUserEstimatedIssueKey',
     }),
   },
   methods: {
     ...mapMutations({
       setCurrentIssue: 'setCurrentIssue',
     }),
-    async insertIssueEstimationResult(issueKey: string, userName: string, userAvatarUrl: string, estimatedStoryPoint: string) {
+    async insertIssueEstimationResult(issueKey: string, accountId: string, estimatedStoryPoint: string) {
       const vm = this;
-      vm.user.estimatedIssueKeys[issueKey] = true
-      const estimationResult: EstimationResult = {issueKey, userName, userAvatarUrl, estimatedStoryPoint};
       const jiraPokerService = new JiraPokerService();
-      await jiraPokerService.insertIssueEstimationResult(estimationResult);
+      await jiraPokerService.insertIssueEstimationResult(issueKey, accountId, estimatedStoryPoint);
       vm.$socket.client.emit('insertIssueEstimationResult', issueKey);
     },
     async insertIssueStatus(issueStatus: IssueStatus) {
@@ -126,10 +125,10 @@ export default Vue.extend({
       await jiraPokerService.deleteIssueEstimationResults(issueKey);
       vm.$socket.client.emit('deleteIssueEstimationResults', issueKey);
     },
-    async setUserEstimatedIssueKeys(userName: string) {
+    async setUserEstimatedIssueKeys(accountId: string) {
       const vm = this;
       const jiraPokerService = new JiraPokerService();
-      let estimatedIssueKeys = await jiraPokerService.getUserEstimatedIssueKeys(userName);
+      let estimatedIssueKeys = await jiraPokerService.getUserEstimatedIssueKeys(accountId);
       vm.user.estimatedIssueKeys = estimatedIssueKeys;
     }, 
     async setSprints() {
@@ -146,7 +145,7 @@ export default Vue.extend({
   async created() {
     const vm = this;
     vm.setSprints();
-    vm.setUserEstimatedIssueKeys(vm.user.userName);
+    vm.setUserEstimatedIssueKeys(vm.user.accountId);
   },
   async updated() {
     console.log('updated')

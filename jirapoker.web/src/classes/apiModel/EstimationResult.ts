@@ -1,14 +1,14 @@
 
+import { UserProfile } from '@/classes/model';
+
 export default class EstimationResult {
   public issueKey: string;
-  public userName: string;
-  public userAvatarUrl: string;
+  public user: UserProfile;
   public estimatedStoryPoint: any;
 
   constructor(fields?: {
     issueKey: string;
-    userName: string;
-    userAvatarUrl: string;
+    user: UserProfile;
     estimatedStoryPoint: string;
 
   }) {
