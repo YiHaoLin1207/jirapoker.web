@@ -5,8 +5,10 @@ import { HttpRequestError, HttpTimeoutError, HttpUnauthorizedError } from '@/cla
 import appConfig from '@/config/app.config.ts';
 import store from '@/store';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Mutex, MutexInterface } from 'async-mutex';
 
 const { HTTP_REQUEST_TIMEOUT } = appConfig;
+const mutex = new Mutex();
 
 let isAlreadyFetchingAccessToken = false;
 const vm: any = new Vue();
@@ -16,8 +18,11 @@ let requestCounter: number = 0;
 axios.interceptors.request.use( (config: AxiosRequestConfig) => {
   // setup UI blocking
   const routeName: string | undefined = router.currentRoute.name;
-  if (requestCounter === 0 && routeName !== 'login' && checkUiBlockingExcludedCondition(config)) {
-    loader = vm.$loading.show({
+  mutex.acquire().then((release: any) => {
+    if (requestCounter === 0 && checkUiBlockingCondition({ routeName, requestConfig: config })) {
+      requestCounter += 1;
+      release();
+      loader = vm.$loading.show({
         canCancel: false,
         isFullPage: true,
         backgroundColor: '#ffffff',
@@ -26,8 +31,11 @@ axios.interceptors.request.use( (config: AxiosRequestConfig) => {
         zIndex: 999,
         loader: 'dots',
       }, {});
-    requestCounter += 1;
-  }
+    } else {
+      requestCounter += 1;
+      release();
+    }
+  });
 
   // Base Url
   config.baseURL = process.env.VUE_APP_HOST_BACKEND_URL;
@@ -46,18 +54,23 @@ axios.interceptors.request.use( (config: AxiosRequestConfig) => {
   return Promise.reject(error);
 });
 
-axios.interceptors.response.use( (response: AxiosResponse<any>) => {
-    // hide UI blocking
+axios.interceptors.response.use((response: AxiosResponse<any>) => {
+  // hide UI blocking
+  if (checkUiBlockingCondition({ response })) {
     setTimeout(() => {
-        if (requestCounter > 0) {
-            requestCounter -= 1;
-            if (requestCounter === 0) {
-                loader.hide();
-            }
+      mutex.acquire().then((release: any) => {
+        requestCounter = requestCounter - 1 < 0 ? 0 : requestCounter - 1 ;
+        if (requestCounter === 0) {
+          release();
+          loader.hide();
+        } else {
+          release();
         }
+      });
     }, 200);
+  }
 
-    return response;
+  return response;
 }, async (error: any) => {
 
   if (error.code === 'ECONNABORTED') { // Timeout error
@@ -78,7 +91,7 @@ axios.interceptors.response.use( (response: AxiosResponse<any>) => {
 
     if (isRefreshOk) {
       const retryOriginalRequest = new Promise((resolve) => {
-          resolve(axios(originalRequest));
+        resolve(axios(originalRequest));
       });
       return retryOriginalRequest; // Return the resposne from original request with new token
     } else {
@@ -102,14 +115,29 @@ axios.interceptors.response.use( (response: AxiosResponse<any>) => {
   }
 });
 
-function checkUiBlockingExcludedCondition(requestConfig: AxiosRequestConfig) {
-  let showUiBlocking: boolean = true;
-  const url: any = requestConfig.url;
+function checkUiBlockingCondition(condition: {
+  routeName?: string | null,
+  requestConfig?: AxiosRequestConfig,
+  response?: AxiosResponse<any>,
+}) {
+  let excluded: boolean = false;
   const excludedUrlPtn = `[^\\s$.?#].[^\\s]*([^\\/\\s]+\\/)(.*)(\\/Validate\\/){1}(.*)`;
-  if ( typeof url !== 'undefined' && url.match(excludedUrlPtn)) {
-    showUiBlocking = false;
+  if (condition.routeName && condition.routeName === 'login') {
+    excluded = true;
   }
-  return showUiBlocking;
+  if (condition.requestConfig) {
+    const url: any = condition.requestConfig.url;
+    if (typeof url !== 'undefined' && url.match(excludedUrlPtn)) {
+      excluded = true;
+    }
+  }
+  if (condition.response) {
+    const url: any = condition.response.request.responseUrl;
+    if (typeof url !== 'undefined' && url.match(excludedUrlPtn)) {
+      excluded = true;
+    }
+  }
+  return !excluded;
 }
 
 export default axios;

@@ -5,10 +5,17 @@ import app from './module/app';
 import user from './module/user';
 import routeRecord from './module/routeRecord';
 import currentIssue from './module/currentIssue';
+import createPersistedState from 'vuex-persistedstate';
+import * as Cookies from 'js-cookie';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  plugins: [
+    createPersistedState({
+      paths: ['user'],
+    }),
+  ],
   state: {
     //
   },

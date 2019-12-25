@@ -1,3 +1,4 @@
+import { UserProfile } from '@/classes/model';
 import { Sprint, EstimationResult, IssueStatus } from '@/classes/apiModel';
 import axios from '@/modules/axios.factory';
 import { AxiosResponse } from 'axios';
@@ -116,12 +117,25 @@ export default class JiraPokerService {
    * deleteIssueStatus
    *
    * @param issueKey: string
-   * @returns {Promise<boolean}
+   * @returns {Promise<boolean></boolean>}
    * @memberof JiraPokerService
    */
   public async deleteIssueStatus(issueKey: string): Promise<any> {
     const url = `/api/issue/${issueKey}/status`;
     const res: AxiosResponse<any> = await axios.delete(url);
     return res;
+  }
+
+  /**
+   * getUserProfile
+   *
+   * @param accountId: string
+   * @returns {Promise<UserProfile>}
+   * @memberof JiraPokerService
+   */
+  public async getUserProfile(accountId: string): Promise<UserProfile> {
+    const url = `/api/user-profile/${accountId}`;
+    const res: AxiosResponse<any> = await axios.get(url);
+    return res.data;
   }
 }

@@ -1,6 +1,6 @@
 import { Account, Issue } from '@/classes/apiModel';
 import { EnumAction, EnumActionStatus } from '@/classes/enum';
-import { AuthService } from '@/services';
+import { AuthService, JiraPokerService } from '@/services';
 import { UserProfile } from '@/classes/model';
 import { toastrCustom } from '@/modules/toastr.factory';
 import { EnumHttpStatusCode } from '@/classes/enum';
@@ -16,6 +16,11 @@ export default {
     user: (state: any) => state.user,
   },
   mutations: {
+    async setUserEstimatedIssueKeys(state: any, accountId: string) {
+      const jiraPokerService = new JiraPokerService();
+      const estimatedIssueKeys = await jiraPokerService.getUserEstimatedIssueKeys(accountId);
+      state.user.estimatedIssueKeys = estimatedIssueKeys;
+    },
     updateUserEstimatedIssueKey(state: any, issueKey: string) {
       state.user.estimatedIssueKeys[issueKey] = true;
       state.user = new UserProfile(state.user);
@@ -31,6 +36,13 @@ export default {
         avatarUrl: user.avatarUrl as string,
 
       });
+    },
+    async updateUser(state: any) {
+      const jiraPokerService = new JiraPokerService();
+      const userProfile = await jiraPokerService.getUserProfile(state.user.accountId);
+      state.user.userName =  userProfile.userName;
+      state.user.accountId = userProfile.accountId;
+      state.user.avatarUrl = userProfile.avatarUrl;
     },
     reset(state: any) {
       state.user = {};
@@ -70,28 +82,9 @@ export default {
         commit('reset');
         commit('cleanRouteRecord');
         commit('cleanApp');
-        commit('cleanQuery');
       } catch (err) {
         throw err;
       }
-    },
-
-    /**
-     * Refresh User store (Cookie-based)
-     *
-     * @param {{ commit: any, state: any}} { commit, dispatch }
-     * @returns {Promise<boolean>}
-     */
-    async refresh( { state, dispatch }: { state: any, dispatch: any}) {
-      const isOk: boolean = true;
-      // if (!state.user.userName) {
-      //  return !isOk;
-      // }
-      // Get permissions
-      await dispatch('setSideMenu');
-
-      return isOk;
-
     },
 
   /**

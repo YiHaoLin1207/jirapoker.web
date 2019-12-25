@@ -58,7 +58,7 @@ Vue.use(Loading, {isLoading: false}, {});
 Vue.use(VueSocketIOExt, socket, { store });
 
 /* Global setting */
-/* SetRouteGuard(); */
+SetRouteGuard();
 
 new Vue({
   router,

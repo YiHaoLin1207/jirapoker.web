@@ -8,13 +8,13 @@ export default class UserProfile {
   public accountId: string;
   public userName: string;
   public avatarUrl: string;
-  public estimatedIssueKeys: string[] = [];
+  public estimatedIssueKeys: object[] = [];
 
   constructor(fields?: {
     accountId?: string,
     userName?: string,
     avatarUrl?: string,
-    estimatedIssueKeys?: string[];
+    estimatedIssueKeys?: object[];
   }) {
     if (fields) {
       Object.assign(this, fields);

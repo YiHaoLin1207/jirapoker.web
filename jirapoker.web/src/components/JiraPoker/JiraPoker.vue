@@ -100,6 +100,7 @@ export default Vue.extend({
   methods: {
     ...mapMutations({
       setCurrentIssue: 'setCurrentIssue',
+      setUserEstimatedIssueKeys: 'setUserEstimatedIssueKeys',
     }),
     async insertIssueEstimationResult(issueKey: string, accountId: string, estimatedStoryPoint: string) {
       const vm = this;
@@ -125,12 +126,6 @@ export default Vue.extend({
       await jiraPokerService.deleteIssueEstimationResults(issueKey);
       vm.$socket.client.emit('deleteIssueEstimationResults', issueKey);
     },
-    async setUserEstimatedIssueKeys(accountId: string) {
-      const vm = this;
-      const jiraPokerService = new JiraPokerService();
-      let estimatedIssueKeys = await jiraPokerService.getUserEstimatedIssueKeys(accountId);
-      vm.user.estimatedIssueKeys = estimatedIssueKeys;
-    }, 
     async setSprints() {
       const vm = this;
       const jiraPokerService = new JiraPokerService();
@@ -138,14 +133,10 @@ export default Vue.extend({
       vm.sprints = sprints;
     }
   },
-  async mounted() {
-    
-  },
-
   async created() {
     const vm = this;
-    vm.setSprints();
     vm.setUserEstimatedIssueKeys(vm.user.accountId);
+    vm.setSprints();    
   },
   async updated() {
     console.log('updated')

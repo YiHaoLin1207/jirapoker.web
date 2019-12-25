@@ -73,10 +73,6 @@ const setLanguage = (to: any): string => {
 };
 
 
-const refreshAsync = async (): Promise<boolean> => {
-  return await store.dispatch('refresh');
-};
-
 const getTargetRoute = (urlTo: any, to: any): any => {
   if (urlTo !== null && urlTo.name !== undefined) {
     return urlTo;
@@ -93,7 +89,7 @@ const SetRouteGuard = () => {
     if (store.getters.user.userName === undefined) {  // access withoout user
       if (to.path === '/zh-tw/login') {
         next();
-      } else if (!store.getters.loginNow && !await refreshAsync()) {
+      } else if (!store.getters.loginNow) {
         store.commit('setLoginNow', true);
         store.commit('setUrlTo', to);
         store.commit('setErrorSource', EnumNoPermissionErrorSource.FromURL);

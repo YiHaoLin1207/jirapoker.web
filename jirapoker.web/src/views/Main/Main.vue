@@ -156,10 +156,11 @@ export default Vue.extend({
       'setBreadCrumb',
       'setLocale',
       'setErrorSource',
+      'setMenu',
+      'updateUser'
     ]),
     ...mapActions({
       signOut: 'signOut',
-      refresh: 'refresh',
     }),
 
     turnToPage(route: any) {
@@ -264,14 +265,11 @@ export default Vue.extend({
   },
   async mounted() {
     const vm: any = this;
-    // Signout if the user store is cleared and cannot re-get user profile by cookie
-    if (!vm.currentUser.id) {
-      const isRefreshSuccess = await vm.refresh();
-      if (!isRefreshSuccess) {
-        vm.$router.replace({ name: 'login' });
-      }
+    
+    if (vm.currentUser.accountId) {
+      vm.updateUser();
+      vm.setMenu();
     }
-
     vm.setBreadCrumb(this.$route);
     vm.countdown = vm.formatSeconds2Str(SIGN_OUT_TIMEOUT);
     vm.startNowTimer();
