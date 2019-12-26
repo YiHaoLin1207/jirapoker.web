@@ -53,7 +53,7 @@
              :background-color="bgColor">
       <div slot="default">
           <div class="loading-logo"><img src="@/assets/images/loading/loading.gif"></div>
-          <div class="loading-text">Loading MiniTIS...</div>
+          <div class="loading-text">Loading Jira Poker...</div>
       </div>
     </loading>
   </div>
