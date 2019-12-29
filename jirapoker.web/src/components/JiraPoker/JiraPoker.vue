@@ -162,7 +162,7 @@ export default Vue.extend({
       top:18%;
       width: 80%;
       overflow: hidden;
-      z-index:9998;
+      z-index:10;
     }
     .list-group-item.list-group-item-action {
       width: 70%;
