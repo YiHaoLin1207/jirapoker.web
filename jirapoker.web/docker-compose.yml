@@ -1,0 +1,6 @@
+version: "3"
+services:
+  minitisvue:
+    build: .
+    ports:
+      - ${VUE_APP_HOST_FRONTEND_PORT}:8081

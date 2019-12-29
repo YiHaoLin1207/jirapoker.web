@@ -17,12 +17,16 @@
                 <select v-else id="inputState" class="form-control" :disabled="true">
                 </select>
               </Col>      
-              <Col span="1" :style="{'position': 'absolute', 'left': 90 + 50 * index + 'px'}" v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.user.accountId">         
+              <Col span="1" :style="{'position': 'absolute', 'left': 90 + 50 * index + 'px'}" v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.user.accountId">                         
                 <Badge v-if="currentIssue.isRevealed" :text="estimationResult.estimatedStoryPoint">
-                  <Avatar :src="estimationResult.user.avatarUrl" />
+                  <Tooltip :content="estimationResult.user.userName" placement="bottom">
+                    <Avatar :src="estimationResult.user.avatarUrl" />
+                  </Tooltip>
                 </Badge>
                 <Badge v-else text="OK">
-                  <Avatar :src="estimationResult.user.avatarUrl" />
+                  <Tooltip :content="estimationResult.user.userName" placement="bottom">  
+                    <Avatar :src="estimationResult.user.avatarUrl" />
+                  </Tooltip>
                 </Badge>
               </Col>
             </div>
