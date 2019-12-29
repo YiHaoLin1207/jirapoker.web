@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vue-cli-service serve --mode dev",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --mode docker",
     "copy-webconfig": "xcopy \"web.config\" \".\\dist\\*\" /K /D /H /Y",
     "copy-webconfig-ci": "xcopy \"web.config\" \".\\publish\\dev\\*\" /K /D /H /Y & xcopy \"web.config\" \".\\publish\\sit\\*\" /K /D /H /Y & xcopy \"web.config\" \".\\publish\\staging\\*\" /K /D /H /Y",
     "copy-webconfig-ci-docker": "xcopy \"web.config\" \".\\publish\\docker\\*\" /K /D /H /Y",

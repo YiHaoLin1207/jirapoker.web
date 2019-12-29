@@ -1,13 +1,20 @@
 FROM node:lts-alpine
+ARG VUE_APP_HOST_BACKEND_URL
+ARG VUE_APP_HOST_FRONTEND_PORT
 
 ENV TZ "Asia/Taipei"
-RUN npm install -g http-server
-RUN npm run build
+ENV VUE_APP_HOST_BACKEND_URL $VUE_APP_HOST_BACKEND_URL
+ENV VUE_APP_HOST_FRONTEND_PORT $VUE_APP_HOST_FRONTEND_PORT
 
 WORKDIR /app
 
-COPY ./dist ./dist
+COPY . .
 
-EXPOSE 8081
+RUN npm install
+RUN npm install -g http-server
 
-CMD [ "http-server", "./dist", "-p", "8081" ]
+RUN npm run build -- --mode docker
+
+CMD [ "/bin/sh", "-c", "http-server ./dist -p $VUE_APP_HOST_FRONTEND_PORT" ]
+
+EXPOSE $VUE_APP_HOST_FRONTEND_PORT

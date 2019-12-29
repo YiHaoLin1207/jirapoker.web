@@ -1,6 +1,11 @@
-version: "3"
+version: "2"
 services:
-  minitisvue:
-    build: .
+  jirapokervue:
+    build:
+      context: .
+      args:
+        VUE_APP_HOST_BACKEND_URL: http://192.168.56.102:5000/
+        VUE_APP_HOST_FRONTEND_PORT: 8081
     ports:
-      - ${VUE_APP_HOST_FRONTEND_PORT}:8081
+      - 8081:8081
+
