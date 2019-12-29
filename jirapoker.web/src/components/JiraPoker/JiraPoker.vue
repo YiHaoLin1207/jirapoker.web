@@ -55,7 +55,7 @@
                 <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'accountId': user.accountId, 'statusName': 'isRevealed'}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
                   <Badge v-if="user.estimatedIssueKeys[issue.issueKey]" status="success" />
                   <Badge v-else status="default" />
-                  <a class="nav-item" :href="issue.url">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}<span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
+                  <a class="nav-item" :href="issue.url" target="_blank">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}<span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
                 </button>
               </div>
               <a class="custom toggle-features" @click="collapse(sprint.sprintName)"> collapse </a>
