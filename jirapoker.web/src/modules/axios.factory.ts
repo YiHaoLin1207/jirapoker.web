@@ -18,24 +18,27 @@ let requestCounter: number = 0;
 axios.interceptors.request.use( (config: AxiosRequestConfig) => {
   // setup UI blocking
   const routeName: string | undefined = router.currentRoute.name;
-  mutex.acquire().then((release: any) => {
-    if (requestCounter === 0 && checkUiBlockingCondition({ routeName, requestConfig: config })) {
-      requestCounter += 1;
-      release();
-      loader = vm.$loading.show({
-        canCancel: false,
-        isFullPage: true,
-        backgroundColor: '#ffffff',
-        color: '#1d90ff',
-        opacity: 0.7,
-        zIndex: 999,
-        loader: 'dots',
-      }, {});
-    } else {
-      requestCounter += 1;
-      release();
-    }
-  });
+  if (checkUiBlockingCondition({ routeName, requestConfig: config })) {
+    mutex.acquire().then((release: any) => {
+      if (requestCounter === 0) {
+        requestCounter += 1;
+        release();
+        loader = vm.$loading.show({
+          canCancel: false,
+          isFullPage: true,
+          backgroundColor: '#ffffff',
+          color: '#1d90ff',
+          opacity: 0.7,
+          zIndex: 999,
+          loader: 'dots',
+        }, {});
+      } else {
+        requestCounter += 1;
+        release();
+      }
+    });
+  }
+
 
   // Base Url
   config.baseURL = process.env.VUE_APP_HOST_BACKEND_URL;
@@ -72,7 +75,10 @@ axios.interceptors.response.use((response: AxiosResponse<any>) => {
 
   return response;
 }, async (error: any) => {
+  // reset UI Block counter
+  resetUiBlockCounter();
 
+  // Start Handling Issues
   if (error.code === 'ECONNABORTED') { // Timeout error
     const timeoutErr = new HttpTimeoutError(error, error.config.url);
     return Promise.reject(timeoutErr); // Return original response
@@ -132,12 +138,47 @@ function checkUiBlockingCondition(condition: {
     }
   }
   if (condition.response) {
-    const url: any = condition.response.request.responseUrl;
+    const url: any = parseURL(condition.response.request.responseURL).pathname;
     if (typeof url !== 'undefined' && url.match(excludedUrlPtn)) {
       excluded = true;
     }
   }
   return !excluded;
 }
+// hack reference: https://www.abeautifulsite.net/parsing-urls-in-javascript
+function parseURL(url: string) {
+  const parser = document.createElement('a');
+  const searchObject: any = {};
+  let queries;
+  let split;
+  let i;
+  // Let the browser do the work
+  parser.href = url;
+  // Convert query string to object
+  queries = parser.search.replace(/^\?/, '').split('&');
+  for (i = 0; i < queries.length; i++) {
+    split = queries[i].split('=');
+    searchObject[split[0]] = split[1];
+  }
+  return {
+    protocol: parser.protocol,
+    host: parser.host,
+    hostname: parser.hostname,
+    port: parser.port,
+    pathname: parser.pathname,
+    search: parser.search,
+    searchObject,
+    hash: parser.hash,
+  };
+}
+
+function resetUiBlockCounter() {
+  mutex.acquire().then((release: any) => {
+    requestCounter = 0;
+    loader.hide();
+    release();
+  });
+}
+
 
 export default axios;
