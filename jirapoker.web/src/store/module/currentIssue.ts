@@ -14,23 +14,26 @@ export default {
         state.currentIssue.estimationResults = [];
         state.currentIssue.currentEstimatedStoryPoint = '';
         state.currentIssue = new Issue(state.currentIssue);
-      }
+      };
     },
     updateCurrentIssueEstimationResults(state: any, results: EstimationResult[]) {
-      state.currentIssue.estimationResults = results;
-      state.currentIssue = new Issue(state.currentIssue);
+      // all the results will contain the same issueKey because of the behavior of jirapoker backend
+      if (results[0].issueKey === state.currentIssue.issueKey) {
+        state.currentIssue.estimationResults = results;
+        state.currentIssue = new Issue(state.currentIssue);
+      };
     },
     updateCurrentIssueStatus(state: any, issueStatus: IssueStatus) {
       if (issueStatus.issueKey === state.currentIssue.issueKey) {
         state.currentIssue.isRevealed = issueStatus.isRevealed;
         state.currentIssue = new Issue(state.currentIssue);
-      }
+      };
     },
     resetCurrentIssueStatus(state: any, issueKey: string) {
       if (issueKey === state.currentIssue.issueKey) {
         state.currentIssue.isRevealed = false;
         state.currentIssue = new Issue(state.currentIssue);
-      }
+      };
     },
     async setCurrentIssue(state: any, payload: any) {
       if (payload.issue !== undefined && payload.accountId !== undefined && payload.statusName !== undefined) {
@@ -40,7 +43,7 @@ export default {
         const issueRevealedStatus = await jiraPokerService.getIssueStatus(payload.issue.issueKey, payload.statusName);
         state.currentIssue = payload.issue;
         state.currentIssue.isRevealed = issueRevealedStatus;
-      }
+      };
     },
   },
   actions: {
