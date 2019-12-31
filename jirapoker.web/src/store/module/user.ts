@@ -21,9 +21,11 @@ export default {
       const estimatedIssueKeys = await jiraPokerService.getUserEstimatedIssueKeys(accountId);
       state.user.estimatedIssueKeys = estimatedIssueKeys;
     },
-    updateUserEstimatedIssueKey(state: any, issueKey: string) {
-      state.user.estimatedIssueKeys[issueKey] = true;
-      state.user = new UserProfile(state.user);
+    updateUserEstimatedIssueKey(state: any, payload: any) {
+      if (state.user.accountId == payload.userAccountId) {
+        state.user.estimatedIssueKeys[payload.issueKey] = true;
+        state.user = new UserProfile(state.user);
+      }
     },
     resetUserEstimatedIssueKey(state: any, issueKey: string) {
       state.user.estimatedIssueKeys[issueKey] = false;

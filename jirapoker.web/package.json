@@ -34,6 +34,7 @@
     "vue": "^2.6.6",
     "vue-carousel": "^0.18.0",
     "vue-class-component": "^6.0.0",
+    "vue-cli": "^2.9.6",
     "vue-form": "^4.10.1",
     "vue-frame": "^1.0.7",
     "vue-html-to-paper": "^1.1.0",
