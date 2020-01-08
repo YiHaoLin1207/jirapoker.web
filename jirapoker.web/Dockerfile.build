@@ -10,5 +10,5 @@ WORKDIR /app
 COPY . .
 
 RUN npm install
-RUN npm run build -- --mode docker
+RUN npm run build -- --mode docker --dest publish
 

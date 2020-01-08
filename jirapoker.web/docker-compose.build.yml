@@ -1,0 +1,10 @@
+version: "2"
+services:
+  jirapokervue:
+    build:
+      context: .
+      dockerfile: Dockerfile.build
+      args:
+        VUE_APP_HOST_BACKEND_URL: http://192.168.96.20:5001/
+    volumes: 
+      - ./publish:/app/publish

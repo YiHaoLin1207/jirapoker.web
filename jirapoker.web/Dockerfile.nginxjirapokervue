@@ -7,7 +7,7 @@ FROM nginx:latest
 ENV TZ "Asia/Taipei"
 ENV VUE_APP_HOST_FRONTEND_PORT $VUE_APP_HOST_FRONTEND_PORT
 
-COPY ./dist /usr/share/nginx/html
+COPY ./publish /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/nginx.conf
 
 EXPOSE $VUE_APP_HOST_FRONTEND_PORT
