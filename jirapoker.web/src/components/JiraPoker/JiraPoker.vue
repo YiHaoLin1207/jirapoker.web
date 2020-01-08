@@ -3,11 +3,12 @@
   <br><br><br><br><br><br><br>
   <div class="container-fluid search-result-content">
     <div id=list-group class="list-group">
-      <div id="estimation-field-wrapper" v-show="isShowEstimationSelectList">
+      <div id="estimation-field-wrapper" class="col-8" v-show="isShowEstimationSelectList">
         <Row type="flex">
           <div id="estimation-field">
-            <div class="content-title">
+            <div class="content-title" style="font-weight:800; color:black; font-size=24px;">
               {{ currentIssue.issueKey }}
+              <a class="hideEstimationSectionButton" @click="hideEstimationSection">X</a>
             </div>
             <Col span="1">
             <select v-if="currentIssue.isRevealed===false" id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="insertIssueEstimationResult(currentIssue.issueKey, user.accountId, currentIssue.currentEstimatedStoryPoint)">
@@ -34,12 +35,15 @@
         <Row type="flex">
           <Col span="1" style="padding: 12px; padding-left: 3px">
           <div>
-            <Button :disabled="currentIssue.isRevealed === true" @click="insertIssueStatus({issueKey: currentIssue.issueKey, isRevealed: true})" icon="ios-search">Watch Result</Button>
+            <Button :disabled="currentIssue.isRevealed === true" 
+            @click="insertIssueStatus({issueKey: currentIssue.issueKey, isRevealed: true})" 
+            icon="ios-search">Watch Result</Button>
           </div>
           </Col>
           <Col span="1" :style="{'position': 'absolute', 'left': '150px'}" style="padding: 12px; padding-left: 0px">
           <div>
-            <Button :disabled="currentIssue.isRevealed === false" @click="deleteIssueEstimationResults(currentIssue.issueKey); deleteIssueStatus(currentIssue.issueKey);" icon="ios-backspace">Re-estimation</Button>
+            <Button :disabled="currentIssue.isRevealed === false" 
+            @click="deleteIssueEstimationResults(currentIssue.issueKey); deleteIssueStatus(currentIssue.issueKey);" icon="ios-backspace">Re-estimation</Button>
           </div>
           </Col>
         </Row>
@@ -52,10 +56,15 @@
             </div>
             <div slot="content">
               <div v-for="issue in sprint.issues" :key="issue.issueKey">
-                <button type="button" class="list-group-item list-group-item-action" v-if="issue.sprintName === sprint.sprintName" @click="setCurrentIssue({'issue': issue, 'accountId': user.accountId, 'statusName': 'isRevealed'}); isShowEstimationSelectList = true; isShowIssueDetail = true;">
-                  <Badge v-if="user.estimatedIssueKeys[issue.issueKey]" status="success" />
-                  <Badge v-else status="default" />
-                  <a class="nav-item" :href="issue.url" target="_blank">{{ issue.issueKey }}</a>&emsp;{{ issue.summary}}<span class="badge badge-primary badge-pill">{{ issue.storyPoint }}</span>
+                <button type="button" 
+                        class="list-group-item list-group-item-action" 
+                        v-if="issue.sprintName === sprint.sprintName" 
+                        @click="setCurrentIssue({'issue': issue, 'accountId': user.accountId, 'statusName': 'isRevealed'});
+                        isShowEstimationSelectList = true; 
+                        isShowIssueDetail = true;">
+                  <EvaluateStatus :estimated="user.estimatedIssueKeys[issue.issueKey]"></EvaluateStatus>
+                  <a class="nav-item" :href="issue.url" target="_blank">{{ issue.issueKey }}</a>&emsp;{{ issue.summary }}
+                  <storyPoint :point="issue.storyPoint"></storyPoint>
                 </button>
               </div>
               <a class="custom toggle-features" @click="collapse(sprint.sprintName)"> collapse </a>
@@ -76,10 +85,13 @@ import { JiraPokerService } from '@/services';
 import { UserProfile } from '../../classes/model';
 import { mapGetters, mapMutations } from 'vuex';
 import { IssueStatus } from '../../classes/apiModel';
+import { StoryPoint, EvaluateStatus } from './components';
 
 export default Vue.extend({
   name: 'JiraPoker', 
   components: {
+    StoryPoint,
+    EvaluateStatus
   },
   data() {
     return {
@@ -118,6 +130,9 @@ export default Vue.extend({
       if (index > -1) {
         vm.currentActivatedPanel.splice(index, 1);
       }
+    },
+    hideEstimationSection(){
+      this.isShowEstimationSelectList = false;
     },
     async insertIssueEstimationResult(issueKey: string, accountId: string, estimatedStoryPoint: string) {
       const vm = this;
@@ -163,7 +178,7 @@ export default Vue.extend({
 
 <style lang="less" scoped>
   .container-fluid.search-result-content {
-    width: 137%;
+    width: 100%;
     .form-control {
       position: relative;
       left: 3px;
@@ -171,24 +186,32 @@ export default Vue.extend({
       font-size: 15px;
     }
     #estimation-field-wrapper {
+      .hideEstimationSectionButton{
+          position: absolute;
+          right: 1%;
+          font-size: 22px;
+      }
       position: absolute;
-      top:18%;
-      width: 80%;
+      top: 19%;
       overflow: hidden;
       z-index:10;
-    }
+      padding: 0px 10px;
+      border: 2px;
+      border-style: dashed;
+      background-size: 26px 26px;
+      background-color: rgba(255, 255, 255);
+      background-image: 
+        linear-gradient( 45deg,
+                         rgba(24, 150, 223, 0.3) 25%, transparent 25%, transparent 50%,
+                         rgba(24, 150, 223, 0.3) 50%, 
+                         rgba(24, 150, 223, 0.3) 75%, transparent 75%, transparent);
+      }
     .list-group-item.list-group-item-action {
-      width: 70%;
-      font-size: 13px;
+      width: 100%;
+      font-size: 14px;
       display:block;
         .nav-item {
           color: #828282;
-        }        
-        .badge.badge-primary.badge-pill {        
-          position: absolute;
-          right: 2%;
-          width: 35px;
-          background: #6c757d   
         }
     }
   }
