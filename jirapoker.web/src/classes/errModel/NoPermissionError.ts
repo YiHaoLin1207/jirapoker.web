@@ -1,10 +1,8 @@
 import { i18n } from '@/modules/i18n';
-import { EnumErrorType } from '@/classes/enum';
 
 export default class NoPermissionError extends Error {
   public action: string;
   public params: string[];
-  public errorType: EnumErrorType = EnumErrorType.NoPermissionError;
 
   constructor(message?: string, action?: string, params?: string[]) {
     super(message);
@@ -18,7 +16,7 @@ export default class NoPermissionError extends Error {
   }
 
   public toServerString = (): string => {
-    return `[${this.name}][${this.action}][${this.errorType}]`;
+    return `[${this.name}][${this.action}]`;
   }
 
   public toString = (): string => {

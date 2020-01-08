@@ -3,7 +3,6 @@ import Vuex from 'vuex';
 
 import app from './module/app';
 import user from './module/user';
-import routeRecord from './module/routeRecord';
 import currentIssue from './module/currentIssue';
 import createPersistedState from 'vuex-persistedstate';
 import * as Cookies from 'js-cookie';
@@ -28,7 +27,6 @@ export default new Vuex.Store({
   modules: {
     app,
     user,
-    routeRecord,
     currentIssue,
   },
 });

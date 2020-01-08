@@ -63,19 +63,6 @@
         </Layout>
       </Content>
     </Layout>
-    <Modal footer-hide v-model="isShowCautionSignOutModal"
-        class="custom-modal"
-        :class-name="modalWrapClass"
-        :mask-closable="false"
-        :closable="false"
-        width="416"> 
-        <p class="custom-modal-title">
-            <i class="fas fa-exclamation-circle custom-modal-icon"></i>
-            &nbsp;
-            <span>{{ $t('text.caution') }}</span>
-        </p>
-        <p class="custom-modal-content" v-html="$t('main.cautionSignOutPart1') + countdown + $t('main.cautionSignOutPart2')"></p>
-    </Modal>
     </Layout>
   </Layout>
 </template>
@@ -89,22 +76,11 @@ import User from './components/user';
 import ABackTop from './components/a-back-top';
 import Language from './components/language';
 import { toastrCustom } from '@/modules/toastr.factory';
-import { NoPermissionError } from '@/classes/errModel';
-import { EnumNoPermissionErrorSource } from '@/classes/enum';
 import IdleVue from 'idle-vue';
 import appConfig from '@/config/app.config.ts';
 import './Main.less';
 
 const { VERSION_NUMBER, SIGN_OUT_TIMEOUT, SIGN_OUT_NOTIFT_TIMEOUT } = appConfig;
-
-// Define a vue instance for eventHub
-Vue.use(IdleVue, {
-  eventEmitter: new Vue(),
-  idleTime: 1 * 1000, // Million seconds
-});
-
-// Global variable
-let countdownInterval: any = null;
 
 export default Vue.extend({
   name: 'Main',
@@ -121,9 +97,7 @@ export default Vue.extend({
       collapsed: false as boolean,
       unreadCount: 0 as number,
       activeName: '' as string,
-      isShowCautionSignOutModal: false as boolean,
       nowDateTime: new Date() as Date,
-      countdown: '' as string,
       versionNumber: VERSION_NUMBER as string,
     };
   },
@@ -201,67 +175,6 @@ export default Vue.extend({
     handleClick(item: any) {
       this.turnToPage(item);
     },
-    /**
-     * Format seconds to string format: mm:ss
-     * @params {number} secs
-     */
-    formatSeconds2Str(secs: number) {
-      const vm: any = this;
-      const minutes = parseInt(String(secs / 60), 10);
-      const seconds = parseInt(String(secs % 60), 10);
-      const minuteStr = minutes < 10 ? '0' + String(minutes) : String(minutes);
-      const secondStr = seconds < 10 ? '0' + String(seconds) : String(seconds);
-      return `${minuteStr}` + vm.$t('text.minute') + `${secondStr}` + vm.$t('text.second');
-    },
-    /**
-     * Start the Now-datetime timer.
-     */
-    startNowTimer() {
-      const vm: any = this;
-      setInterval(() => {
-        vm.nowDateTime = vm.$options.filters.formattedDateTime(vm.$moment());
-      }, 1000);
-    },
-    /**
-     * Start the auto-signout timer.
-     * @param {number} duration - seconds
-     */
-    startSignOutTimer(duration: number) {
-      const vm: any = this;
-      let timer = duration;
-
-      // Clear interval
-      clearInterval(countdownInterval);
-      countdownInterval = null;
-
-      countdownInterval = setInterval( async () => {
-        --timer;
-        if (timer < 0) {
-          clearInterval(countdownInterval);
-          countdownInterval = null;
-          // Close any modal
-          vm.$Modal.remove();
-          // Vuex User store : Sign out
-          await vm.signOut();
-          // Redirect to Sign-in page
-          vm.$router.replace({ name: 'login', query: { forceSignOut: true }});
-        } else if (timer === SIGN_OUT_NOTIFT_TIMEOUT) {
-          vm.isShowCautionSignOutModal = true;
-        }
-        vm.countdown = vm.formatSeconds2Str(timer);
-
-      }, 1000);
-    },
-  },
-  onActive(): any {
-    const vm: any = this;
-    vm.countdown = vm.formatSeconds2Str(SIGN_OUT_TIMEOUT);
-    clearInterval(countdownInterval);
-    vm.isShowCautionSignOutModal = false;
-  },
-  onIdle() {
-    const vm: any = this;
-    vm.startSignOutTimer(SIGN_OUT_TIMEOUT); // Start Auto-SignOut timer
   },
   async mounted() {
     const vm: any = this;
@@ -271,20 +184,7 @@ export default Vue.extend({
       vm.setMenu();
     }
     vm.setBreadCrumb(this.$route);
-    vm.countdown = vm.formatSeconds2Str(SIGN_OUT_TIMEOUT);
-    vm.startNowTimer();
-
-    // Start Auto-SignOut timer (Bug: if we only use keyboards on login to enter main component, the onIdle wont be triggered)
-    setTimeout(() => {
-      if (!countdownInterval) {
-        vm.startSignOutTimer(SIGN_OUT_TIMEOUT);
-      }
-    }, 3000);
-
     vm.isShowContent = true;
-  },
-  beforeDestroy() {
-    clearInterval(countdownInterval);
   },
 } as any);
 </script>

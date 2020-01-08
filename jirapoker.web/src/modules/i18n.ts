@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import axios, { AxiosPromise } from 'axios';
 import VueI18n, { LocaleMessages } from 'vue-i18n';
-import { EnumAction, EnumNoPermissionErrorSource } from '@/classes/enum';
+import { EnumAction } from '@/classes/enum';
 import { EnumActionLocale } from '@/classes/enum/EnumAction';
 import { LocaleMsg } from '@/classes/model';
 import router from '../router';
@@ -92,10 +92,8 @@ const SetRouteGuard = () => {
       } else if (!store.getters.loginNow) {
         store.commit('setLoginNow', true);
         store.commit('setUrlTo', to);
-        store.commit('setErrorSource', EnumNoPermissionErrorSource.FromURL);
         next('/' + lang + '/login');
       } else {
-        store.commit('setErrorSource', EnumNoPermissionErrorSource.FromURL);
         const target = getTargetRoute(store.getters.urlTo, to);
         store.commit('setUrlTo', null);
         next('/' + lang + target.path.slice(target.path.indexOf('/', 2)));

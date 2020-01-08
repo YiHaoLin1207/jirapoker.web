@@ -1,10 +1,7 @@
 import { i18n } from '@/modules/i18n';
-import { EnumErrorType } from '@/classes/enum';
-
 export default class InvalidParamError extends Error {
   public action: string;
   public params: string[];
-  public errorType: EnumErrorType = EnumErrorType.InvalidParamError;
 
   constructor(message?: string, action?: string, params?: string[]) {
     super(message);
@@ -18,7 +15,7 @@ export default class InvalidParamError extends Error {
   }
 
   public toServerString = (): string => {
-    return `[${this.name}][${this.action}][${this.errorType}] ${this.message}`;
+    return `[${this.name}][${this.action}] ${this.message}`;
   }
 
   public toString = (): string => {
