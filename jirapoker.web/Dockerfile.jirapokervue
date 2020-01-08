@@ -1,0 +1,13 @@
+FROM node:lts-alpine
+
+ARG VUE_APP_HOST_BACKEND_URL
+
+ENV TZ "Asia/Taipei"
+ENV VUE_APP_HOST_BACKEND_URL $VUE_APP_HOST_BACKEND_URL
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm run build -- --mode docker
+
