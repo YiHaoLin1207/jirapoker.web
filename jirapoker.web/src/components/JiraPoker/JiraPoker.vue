@@ -91,7 +91,7 @@ export default Vue.extend({
   name: 'JiraPoker', 
   components: {
     StoryPoint,
-    EvaluateStatus
+    EvaluateStatus,
     clickableAvatar,
   },
   data() {
