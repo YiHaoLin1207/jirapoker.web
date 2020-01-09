@@ -1,0 +1,22 @@
+pipeline {
+    agent none
+    stages {
+        stage ('Deploy JiraPoker Web') {
+            agent {
+                label 'Linux_PlayGround'
+            }
+
+            steps {
+                sh 'rm -rf ~/jirapoker.web || exit 0'
+                sh 'mkdir ~/jirapoker.web || exit 0'
+                sh "cp -r ${env.WORKSPACE}/* ~/jirapoker.web"
+                sh '''
+                cd ~/jirapoker.web/jirapoker.web
+                docker-compose down
+                docker-compose build
+                docker-compose up -d
+                '''              
+            }
+        }      
+    }
+}
