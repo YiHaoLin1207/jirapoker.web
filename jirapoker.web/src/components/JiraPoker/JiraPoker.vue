@@ -61,6 +61,7 @@
                         isShowEstimationSelectList = true; 
                         isShowIssueDetail = true;">
                   <EvaluateStatus :estimated="user.estimatedIssueKeys[issue.issueKey]"></EvaluateStatus>
+                  <img :src="issue.iconUrl" width="21px" height="21px"/>&nbsp;
                   <a class="nav-item" :href="issue.url" target="_blank">{{ issue.issueKey }}</a>&emsp;{{ issue.summary }}
                   <storyPoint :point="issue.storyPoint"></storyPoint>
                 </button>
