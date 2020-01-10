@@ -19,6 +19,21 @@ export default class JiraPokerService {
   }
 
   /**
+   * UpdateStoryPoint
+   *
+   * @param issueKey: string
+   * @param storyPoint: string
+   * @returns {Promise<any}
+   * @memberof JiraPokerService
+   */
+  public async updateStoryPoint(issueKey: string, storyPoint: number): Promise<any> {
+    const url = '/api/issue/story-point';
+    console.log({issueKey, storyPoint});
+    const res: AxiosResponse<any> = await axios.put(url, {issueKey, storyPoint});
+    return res;
+  }
+
+  /**
    * InsertIssueEstimationResult
    *
    * @param issueKey: string

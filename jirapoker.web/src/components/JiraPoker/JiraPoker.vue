@@ -20,9 +20,7 @@
             </Col>
             <Col span="1" :style="{'position': 'absolute', 'left': 90 + 50 * index + 'px'}" v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.user.accountId">
             <Badge v-if="currentIssue.isRevealed" :text="estimationResult.estimatedStoryPoint">
-              <Tooltip :content="estimationResult.user.userName" placement="bottom">
-                <Avatar :src="estimationResult.user.avatarUrl" />
-              </Tooltip>
+              <clickableAvatar :user="estimationResult.user" @click="updateIssueByThisUser(estimationResult)"></clickableAvatar>
             </Badge>
             <Badge v-else text="OK">
               <Tooltip :content="estimationResult.user.userName" placement="bottom">
@@ -86,12 +84,15 @@ import { UserProfile } from '../../classes/model';
 import { mapGetters, mapMutations } from 'vuex';
 import { IssueStatus } from '../../classes/apiModel';
 import { StoryPoint, EvaluateStatus } from './components';
+import clickableAvatar from './components/clickableAvatar.vue';
+import { toastrCustom } from '@/modules/toastr.factory';
 
 export default Vue.extend({
   name: 'JiraPoker', 
   components: {
     StoryPoint,
-    EvaluateStatus
+    EvaluateStatus,
+    clickableAvatar,
   },
   data() {
     return {
@@ -124,6 +125,12 @@ export default Vue.extend({
       setCurrentIssue: 'setCurrentIssue',
       setUserEstimatedIssueKeys: 'setUserEstimatedIssueKeys',
     }),
+    async updateIssueByThisUser(item: any){
+      const vm = this;
+      const jiraPokerService = new JiraPokerService();
+      await jiraPokerService.updateStoryPoint(item.issueKey, +item.estimatedStoryPoint);
+      toastrCustom.success(`story point of issue ${item.issueKey} has been updated as ${item.estimatedStoryPoint}`);
+    },
     collapse(target: string): void{
       const vm: any = this;
       const index = vm.currentActivatedPanel.indexOf(target, 0);
