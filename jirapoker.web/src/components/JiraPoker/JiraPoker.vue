@@ -8,7 +8,7 @@
           <div id="estimation-field">
             <div class="content-title" style="font-weight:800; color:black; font-size=24px;">
               {{ currentIssue.issueKey }}
-              <a class="hideEstimationSectionButton" @click="hideEstimationSection">X</a>
+              <a class="hideEstimationSectionButton" @click="hideEstimationSection"><i class="far fa-times-circle"></i></a>
             </div>
             <Col span="1">
             <select v-if="currentIssue.isRevealed===false" id="inputState" class="form-control" v-model="currentIssue.currentEstimatedStoryPoint" @change="insertIssueEstimationResult(currentIssue.issueKey, user.accountId, currentIssue.currentEstimatedStoryPoint)">
@@ -50,7 +50,7 @@
         <div v-for="sprint in sprints" :key="sprint.sprintName">
           <Panel :name="sprint.sprintName">
             <div class="content-title" style="display: inline-block;">
-            {{ sprint.sprintName}}&emsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
+            {{ sprint.sprintName}} &nbsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
             </div>
             <div slot="content">
               <div v-for="issue in sprint.issues" :key="issue.issueKey">
@@ -62,13 +62,16 @@
                         isShowIssueDetail = true;">
                   <EvaluateStatus :estimated="user.estimatedIssueKeys[issue.issueKey]"></EvaluateStatus>
                   <img :src="issue.iconUrl" width="21px" height="21px"/>&nbsp;
-                  <a class="nav-item" :href="issue.url" target="_blank">{{ issue.issueKey }}</a>&emsp;{{ issue.summary }}
+                  <a class="nav-item" :href="issue.url" target="_blank">{{ issue.issueKey }}</a>&nbsp;{{ issue.summary }}
                   <storyPoint :point="issue.storyPoint"></storyPoint>
                 </button>
               </div>
-              <a class="custom toggle-features" @click="collapse(sprint.sprintName)"> collapse </a>
+              <div style="text-align: center; padding-top: 15px;">
+                <a class="toggle-features" @click="collapse(sprint.sprintName)" style="font-size: 28px;"> 
+                  <i class="fas fa-caret-square-up"></i>
+                </a>
+              </div>
             </div>
-            <br><br>
           </Panel>
         </div>
       </Collapse>
@@ -197,7 +200,7 @@ export default Vue.extend({
       .hideEstimationSectionButton{
           position: absolute;
           right: 1%;
-          font-size: 22px;
+          font-size: 28px;
       }
       position: absolute;
       top: 19%;
