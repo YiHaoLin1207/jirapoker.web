@@ -82,7 +82,6 @@ export default {
         // Inform backend
         // Mutation
         commit('reset');
-        commit('cleanRouteRecord');
         commit('cleanApp');
       } catch (err) {
         throw err;

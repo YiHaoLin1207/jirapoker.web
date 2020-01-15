@@ -18,7 +18,6 @@
       <Header class="header-con">
         <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
           <user :message-unread-count="unreadCount" :user-avatar="require('@/assets/images/avatar/avatar.png')"/>
-          <language @on-lang-change="setLocale" style="margin-right: 20px;" :lang="locale"/>
           <!-- <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store> -->
         </header-bar>
       </Header>
