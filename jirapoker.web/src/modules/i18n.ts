@@ -11,20 +11,8 @@ Vue.use(VueI18n);
 axios.defaults.withCredentials = false;
 
 const loadedLanguages: string[] = []; // our default language that is prelaoded
-// const supportedLangs = ['en-us', 'zh-tw', 'zh-cn'];
 const supportedLangs = ['zh-tw'];
 const dateTimeFormats = {
-  'en-us': {
-    short: { year: 'numeric', month: 'short', day: 'numeric' },
-    long: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      weekday: 'short',
-      hour: 'numeric',
-      minute: 'numeric',
-    },
-  },
   'zh-tw': {
     short: { year: 'numeric', month: 'short', day: 'numeric' },
     long: {
@@ -34,18 +22,6 @@ const dateTimeFormats = {
       weekday: 'long',
       hour: 'numeric',
       minute: 'numeric',
-    },
-  },
-  'zh-cn': {
-    short: { year: 'numeric', month: 'short', day: 'numeric' },
-    long: {
-      year: 'numeric',
-      month: 'long',
-      day: '2-digit',
-      weekday: 'long',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
     },
   },
 };

@@ -63,7 +63,7 @@ export default {
       // Inform backend
       // const account = await auth.signInAsync(user);
       const auth = new AuthService();
-
+      payload.jiraUser = payload.jiraUser + '\@cybersoft4u.com';
       const userProfile: UserProfile = await auth.signInAsync(payload);
       commit('setUser', userProfile);
       await dispatch('setSideMenu');
@@ -82,7 +82,6 @@ export default {
         // Inform backend
         // Mutation
         commit('reset');
-        commit('cleanRouteRecord');
         commit('cleanApp');
       } catch (err) {
         throw err;

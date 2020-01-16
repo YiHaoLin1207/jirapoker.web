@@ -15,9 +15,10 @@
             </div>
             <div class="is-invalid text-left" v-if="isSignInFail && !formstate.$dirty" v-html="$t('login.textSignInFail')">
             </div>
-            <validate auto-label :custom="{'format-check': validate('jiraUser', user.jiraUser)}"> <!-- validate jiraUser [start] -->
+            <validate auto-label> <!-- validate jiraUser [start] -->
               <div :class="formFieldClass(formstate.jiraUser, 'jiraUser')">
-                <Input v-model="user.jiraUser" size="large" autofocus @on-keyup="cleanErrMsg()" :placeholder="$t('login.accountPlaceholder')" name="jiraUser"/>
+                <Input v-model="user.jiraUser" size="large" autofocus @on-keyup="cleanErrMsg()" :placeholder="$t('login.accountPlaceholder')" name="jiraUser" id="jiraUser"/>
+                <label style="font-size: 14px;">&nbsp;&nbsp;@cybersoft4u.com</label>
               </div>
               <div style="margin-top:5px">
                 <field-messages name="jiraUser">
@@ -104,7 +105,6 @@ export default Vue.extend({
   computed: {
     ...mapGetters({
       locale: 'locale',
-      urlTo: 'urlTo',
     }),
     menuList(): any[] {
       return this.$store.getters.menuList;
@@ -151,15 +151,10 @@ export default Vue.extend({
       vm.isSignInFail = false;
       vm.formstate.$submitted = false;
     },
-    async validate(prop: string, val: any) {
-      const vm: any = this;
-      return true;
-    },
     async submit() {
       const vm: any = this;
       let isOk: boolean = false;
-      const valdation = await vm.validate('jiraUser', vm.user.jiraUser);
-      if (isNull(vm.user.jiraUser) || isNull(vm.user.jiraToken) || !valdation) {
+      if (isNull(vm.user.jiraUser) || isNull(vm.user.jiraToken)) {
         return;
       }
 
@@ -168,18 +163,15 @@ export default Vue.extend({
         isOk = await vm.signIn(vm.user);
         if (isOk) {
           setTimeout(() => {
-            if (vm.urlTo && vm.urlTo.name !== undefined && vm.urlTo.name !== 'login') {
-              const target = vm.urlTo;
-              vm.setUrlTo(null);
-              router.push({ path: '/' + vm.locale + target.path.slice(target.path.indexOf('/', 2)) });
-            } else {
-              router.push({ name: 'home' });
-            }
+            router.push({ name: 'home' });
           }, 1500);
         } else {
           vm.isSignInFail = true;
         }
       } catch (err) {
+        if (vm.user.jiraUser.includes('\@')) {
+          vm.user.jiraUser = vm.user.jiraUser.split('\@')[0];
+        }
         toastrCustom.error(err);
       } finally {
         vm.isLoading = isOk;
@@ -293,6 +285,7 @@ export default Vue.extend({
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   border-radius: 2px;
+  text-align: left;
   // // -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
   // -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
   // box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
@@ -356,6 +349,10 @@ export default Vue.extend({
 #logo{
   width:200px;
   height:auto;
+}
+
+#jiraUser {
+  width: 55%;
 }
 
 .is-invalid {

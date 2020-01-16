@@ -14,7 +14,7 @@ const MENUS: MenuNode[] = [
     {
       id: 100,
       name: 'jira-poker',
-      meta: new MenuNodeMeta({ icon: 'fas fa-receipt', title: '估點' }),
+      meta: new MenuNodeMeta({ icon: 'fas fa-sort-numeric-up', title: '估點' }),
       children: [] as MenuNode[],
     },
   ];
