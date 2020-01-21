@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue';
-import { Issue, Sprint, EstimationResult } from '@/classes/apiModel';
+import { Issue, EstimationResult } from '@/classes/apiModel';
 import { JiraPokerService } from '@/services';
 import { UserProfile } from '../../classes/model';
 import { mapGetters, mapMutations } from 'vuex';
@@ -72,11 +72,8 @@ export default Vue.extend({
   data() {
     return {
       isShowEstimationSelectList: false,
-      isShowIssueDetail: false,
-      sprints: [] as Sprint[],
       // Change to all the value to string
       storyPoints: ['0', '0.5', '1', '2', '3', '5', '8', '13', '21', '34', '?'] as string[],
-      currentActivatedPanel: [] as string[],
     };
   },
   computed: {
@@ -106,13 +103,6 @@ export default Vue.extend({
       await jiraPokerService.updateStoryPoint(item.issueKey, +item.estimatedStoryPoint);
       toastrCustom.success(`story point of issue ${item.issueKey} has been updated as ${item.estimatedStoryPoint}`);
     },
-    collapse(target: string): void{
-      const vm: any = this;
-      const index = vm.currentActivatedPanel.indexOf(target, 0);
-      if (index > -1) {
-        vm.currentActivatedPanel.splice(index, 1);
-      }
-    },
     hideEstimationSection(){
       this.isShowEstimationSelectList = false;
     },
@@ -140,17 +130,10 @@ export default Vue.extend({
       await jiraPokerService.deleteIssueEstimationResults(issueKey);
       vm.$socket.client.emit('deleteIssueEstimationResults', issueKey);
     },
-    async setSprints() {
-      const vm = this;
-      const jiraPokerService = new JiraPokerService();
-      let sprints: Sprint[] = await jiraPokerService.getIssuesInActiveAndFutureSprints('product & DevOps Infra');
-      vm.sprints = sprints;
-    }
   },
   async created() {
     const vm = this;
     vm.setUserEstimatedIssueKeys(vm.user.accountId);
-    vm.setSprints();    
     const currentId = vm.$route.params.id;
     const result = await (new JiraPokerService()).getIssueEstimationResults(currentId);
     const targetIssue = new Issue({estimationResults: result, issueKey: currentId})
