@@ -15,17 +15,17 @@ export default class Issue {
     public url: string;
 
     constructor(fields?: {
-      issueKey: string,
-      summary: string,
-      iconUrl: string,
-      issueType: string,
-      storyPoint: number,
-      description: string,
-      sprintName: string,
-      isEstimated: boolean,
-      currentEstimatedStoryPoint: string,
+      issueKey?: string,
+      summary?: string,
+      iconUrl?: string,
+      issueType?: string,
+      storyPoint?: number,
+      description?: string,
+      sprintName?: string,
+      isEstimated?: boolean,
+      currentEstimatedStoryPoint?: string,
       estimationResults?: EstimationResult[],
-      url: string,
+      url?: string,
     }) {
       if (fields) {
           Object.assign(this, fields);
