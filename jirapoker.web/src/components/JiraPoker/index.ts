@@ -1,2 +1,3 @@
 import JiraPoker from './JiraPoker.vue';
-export { JiraPoker};
+import JiraPokerSingle from './JiraPokerSingle.vue';
+export { JiraPokerSingle, JiraPoker };
