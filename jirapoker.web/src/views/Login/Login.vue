@@ -53,7 +53,7 @@
              :color="color"
              :background-color="bgColor">
       <div slot="default">
-          <div class="loading-logo"><img src="@/assets/images/loading/loading.gif"></div>
+          <div class="loading-logo"><img style="height:170px;" src="@/assets/images/loading/loading.gif"></div>
           <div class="loading-text">Loading Jira Poker...</div>
       </div>
     </loading>
@@ -377,8 +377,6 @@ export default Vue.extend({
   -moz-border-radius: 50%;
   -webkit-border-radius: 50%;
   border-radius: 50%;
-  width:300px;
-  height:auto;
   padding-left: 0px;
   padding-bottom: 20px;
 }
