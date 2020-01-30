@@ -17,6 +17,12 @@ const MENUS: MenuNode[] = [
       meta: new MenuNodeMeta({ icon: 'fas fa-sort-numeric-up', title: '估點' }),
       children: [] as MenuNode[],
     },
+    {
+      id: 100,
+      name: 'new-game',
+      meta: new MenuNodeMeta({ icon: 'fas fa-plus-circle', title: '新遊戲' }),
+      children: [] as MenuNode[],
+    },
   ];
 
 export default {
