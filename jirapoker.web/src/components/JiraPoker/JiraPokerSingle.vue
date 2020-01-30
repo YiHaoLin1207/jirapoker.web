@@ -8,6 +8,7 @@
           <div id="estimation-field">
             <div class="content-title" style="font-weight:800; color:black; font-size=24px;">
               {{ currentIssue.issueKey }}
+              <div class="estimation-comment"> {{storyComment}}</div>
               <a class="hideEstimationSectionButton" @click="hideEstimationSection"><i class="far fa-times-circle"></i></a>
             </div>
             <Col span="1">
@@ -81,6 +82,10 @@ export default Vue.extend({
       user: 'user',
       currentIssue: 'currentIssue',
     }),
+    storyComment(): any {
+      const vm: any = this;
+      return vm.$route.query.comment;
+    }
   },
   sockets: {
     ...mapMutations({
