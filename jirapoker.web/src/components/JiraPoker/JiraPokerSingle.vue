@@ -102,13 +102,13 @@ export default Vue.extend({
       setCurrentIssue: 'setCurrentIssue',
       setUserEstimatedIssueKeys: 'setUserEstimatedIssueKeys',
     }),
-    async updateIssueByThisUser(item: any){
+    async updateIssueByThisUser(item: any) {
       const vm = this;
       const jiraPokerService = new JiraPokerService();
       await jiraPokerService.updateStoryPoint(item.issueKey, +item.estimatedStoryPoint);
       toastrCustom.success(`story point of issue ${item.issueKey} has been updated as ${item.estimatedStoryPoint}`);
     },
-    hideEstimationSection(){
+    hideEstimationSection() {
       this.isShowEstimationSelectList = false;
     },
     async insertIssueEstimationResult(issueKey: string, accountId: string, estimatedStoryPoint: string) {
@@ -137,12 +137,12 @@ export default Vue.extend({
     },
   },
   async created() {
-    const vm = this;
+    const vm: any = this;
     vm.setUserEstimatedIssueKeys(vm.user.accountId);
     const currentId = vm.$route.params.id;
     const result = await (new JiraPokerService()).getIssueEstimationResults(currentId);
-    const targetIssue = new Issue({estimationResults: result, issueKey: currentId})
-    vm.setCurrentIssue({issue:targetIssue, accountId:vm.user.accountId, statusName: 'isRevealed'})
+    const targetIssue = new Issue({ estimationResults: result, issueKey: currentId })
+    vm.setCurrentIssue({ issue: targetIssue, accountId: vm.user.accountId, statusName: 'isRevealed' })
   },
   async updated() {
     console.log('updated')
@@ -188,5 +188,13 @@ export default Vue.extend({
           color: #828282;
         }
     }
+  }
+
+  .estimation-comment {
+    font-size: 24px;
+    color: #172b4d;
+    font-weight: 250;
+    font-style: normal;
+    display: inline;
   }
 </style>
