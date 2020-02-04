@@ -4,6 +4,7 @@ import Main from '@/views/Main';
 import Login from '@/views/Login';
 import Home from '@/components/Home.vue';
 import { JiraPoker, JiraPokerSingle } from '@/components/JiraPoker';
+import { NewGame } from '@/components/NewGame';
 
 Vue.use(VueRouter);
 
@@ -30,6 +31,7 @@ const routes = [
       { path: 'home', name: 'home', component: Home, meta: { pageId: 1 } },
       { path: 'jira-poker', name: 'jira-poker', component: JiraPoker, meta: { pageId: 100 } },
       { path: 'jira-poker/single/:id', name: 'jira-poker-single', component: JiraPokerSingle, meta: { pageId: 100 } },
+      { path: 'new-game', name: 'new-game', component: NewGame, meta: { pageId: 100 } },
     ],
   },
 ];
