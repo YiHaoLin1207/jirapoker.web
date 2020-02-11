@@ -127,7 +127,7 @@ function checkUiBlockingCondition(condition: {
   response?: AxiosResponse<any>,
 }) {
   let excluded: boolean = false;
-  const excludedUrlPtn = `[^\\s$.?#].[^\\s]*([^\\/\\s]+\\/)(.*)(\\/Validate\\/){1}(.*)`;
+  const excludedUrlPtn = `api/issue/story-point`;
   if (condition.routeName && condition.routeName === 'login') {
     excluded = true;
   }
