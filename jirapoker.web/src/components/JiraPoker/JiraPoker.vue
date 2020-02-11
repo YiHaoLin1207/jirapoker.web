@@ -203,7 +203,7 @@ export default Vue.extend({
           font-size: 28px;
       }
       position: absolute;
-      top: 19%;
+      top: 13%;
       overflow: hidden;
       z-index:10;
       padding: 0px 10px;

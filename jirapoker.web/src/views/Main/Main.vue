@@ -1,9 +1,5 @@
 <template>
-  <Layout style="height: 100%">
-    <div style="height: 4.5%; background-color: #0070bd;">
-      <img id="logo-cybesoft" src="@/assets/images/logo-cybersoft/logo-cybersoft.png" style="height:initial"/>
-    </div>
-    <Layout style="height: 95.5%" class="main" >
+  <Layout style="height: 100%" class="main">
     <Sider hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed" class="left-sider shadow" :style="{overflow: 'hidden'}">
       <side-menu accordion ref="sideMenu" :active-name="activeName" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
         <div class="logo-con">
@@ -61,7 +57,6 @@
           </Content>
         </Layout>
       </Content>
-    </Layout>
     </Layout>
   </Layout>
 </template>
