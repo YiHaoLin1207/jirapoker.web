@@ -31,6 +31,5 @@ export default Vue.extend({
 <style scoped lang="less">
 .clickable-avatar {
   padding: 3px;
-  background-color: red;
 }
 </style>
