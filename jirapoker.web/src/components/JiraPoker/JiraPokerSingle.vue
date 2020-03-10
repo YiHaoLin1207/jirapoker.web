@@ -62,6 +62,7 @@ import { IssueStatus } from '../../classes/apiModel';
 import { StoryPoint, EvaluateStatus } from './components';
 import clickableAvatar from './components/clickableAvatar.vue';
 import { toastrCustom } from '@/modules/toastr.factory';
+import { NoticeCustom } from '@/modules/notice.factory';
 
 export default Vue.extend({
   name: 'JiraPoker', 
@@ -106,7 +107,10 @@ export default Vue.extend({
       const vm = this;
       const jiraPokerService = new JiraPokerService();
       await jiraPokerService.updateStoryPoint(item.issueKey, +item.estimatedStoryPoint);
-      toastrCustom.success(`story point of issue ${item.issueKey} has been updated as ${item.estimatedStoryPoint}`);
+      NoticeCustom.info({
+        title: 'Updated',
+        desc: `story point of issue ${item.issueKey} has been updated as ${item.estimatedStoryPoint}`,
+      }, 5);
     },
     hideEstimationSection() {
       this.isShowEstimationSelectList = false;
