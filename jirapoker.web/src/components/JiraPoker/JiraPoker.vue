@@ -46,8 +46,12 @@
           </Col>
         </Row>
       </div>
+      <div class="filter-panel row">
+        <div class="col-lg-2 col-md-3 col-sm-12"> issue keyword: </div>
+        <Input class="col-md-4 col-md-5 col-sm-12" v-model="issueKeyword" placeholder='please enter exact jira issue key'/>
+      </div>
       <Collapse simple v-model="currentActivatedPanel">
-        <div v-for="sprint in sprints" :key="sprint.sprintName">
+        <div v-for="sprint in computedSprints" :key="sprint.sprintName">
           <Panel :name="sprint.sprintName">
             <div class="content-title" style="display: inline-block;">
             {{ sprint.sprintName}} &nbsp;<span class="badge badge-secondary">{{ sprint.issues.length }}&nbsp;issues</span>
@@ -91,6 +95,7 @@ import { StoryPoint, EvaluateStatus } from './components';
 import clickableAvatar from './components/clickableAvatar.vue';
 import { toastrCustom } from '@/modules/toastr.factory';
 import { NoticeCustom } from '@/modules/notice.factory';
+import { isNull } from '@/libs/util';
 
 export default Vue.extend({
   name: 'JiraPoker', 
@@ -107,6 +112,7 @@ export default Vue.extend({
       // Change to all the value to string
       storyPoints: ['0', '0.5', '1', '2', '3', '5', '8', '13', '21', '34', '?'] as string[],
       currentActivatedPanel: [] as string[],
+      issueKeyword: '' as string,
     };
   },
   computed: {
@@ -114,6 +120,23 @@ export default Vue.extend({
       user: 'user',
       currentIssue: 'currentIssue',
     }),
+    computedSprints(): Sprint[]{
+      const vm: any =this;
+      if(!vm.issueKeyword){
+        return vm.sprints;
+      }
+      let result: Sprint[] = [];
+      result = vm.sprints.reduce((resultSprints: Sprint[], currentSprint: Sprint)=>{
+        let issues = currentSprint.issues.filter((issue: Issue)=>{
+          return issue.issueKey === vm.issueKeyword;
+        })
+        if( !isNull(issues)){
+          return resultSprints.concat(new Sprint({ sprintName: currentSprint.sprintName, issues}));
+        }
+        return resultSprints;
+      }, result);
+      return result;
+    }
   },
   sockets: {
     ...mapMutations({
@@ -181,7 +204,7 @@ export default Vue.extend({
     }
   },
   async created() {
-    const vm = this;
+    const vm: any = this;
     vm.setUserEstimatedIssueKeys(vm.user.accountId);
     vm.setSprints();    
   },
