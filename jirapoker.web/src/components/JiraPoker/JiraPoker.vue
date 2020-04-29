@@ -48,7 +48,7 @@
       </div>
       <div class="filter-panel row">
         <div class="col-lg-2 col-md-3 col-sm-12"> issue keyword: </div>
-        <Input class="col-md-4 col-md-5 col-sm-12" v-model="issueKeyword" placeholder='please enter exact jira issue key'/>
+        <Input class="col-md-4 col-md-5 col-sm-12" v-model="issueKeyword" placeholder='please enter issue key or keyword'/>
       </div>
       <Collapse simple v-model="currentActivatedPanel">
         <div v-for="sprint in computedSprints" :key="sprint.sprintName">
@@ -128,7 +128,14 @@ export default Vue.extend({
       let result: Sprint[] = [];
       result = vm.sprints.reduce((resultSprints: Sprint[], currentSprint: Sprint)=>{
         let issues = currentSprint.issues.filter((issue: Issue)=>{
-          return issue.issueKey === vm.issueKeyword;
+          if (issue.issueKey === vm.issueKeyword) return true;
+          for( let keyword of vm.issueKeyword.split(' ') ){
+            if ( keyword ){
+              if (issue.summary && issue.summary.includes(keyword)) return true;
+              if (issue.description && issue.description.includes(keyword)) return true;
+            }
+          }
+          return false;
         })
         if( !isNull(issues)){
           return resultSprints.concat(new Sprint({ sprintName: currentSprint.sprintName, issues}));
