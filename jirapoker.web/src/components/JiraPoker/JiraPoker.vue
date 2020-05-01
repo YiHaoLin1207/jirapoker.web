@@ -44,6 +44,15 @@
             @click="deleteIssueEstimationResults(currentIssue.issueKey); deleteIssueStatus(currentIssue.issueKey);" icon="ios-backspace">Re-estimation</Button>
           </div>
           </Col>
+          <Col span="1" :style="{'position': 'absolute', 'left': '300px'}" style="padding: 12px; padding-left: 0px;">
+            <Input :disabled="currentIssue.isRevealed" v-model="customizedComments" style="min-width:125px" placeholder="leave comments here"/>
+          </Col>
+          <Col span="1" :style="{'position': 'absolute', 'left': '450px'}" style="padding: 12px; padding-left: 0px">
+          <div>
+            <Button :disabled="currentIssue.isRevealed" 
+            @click="insertIssueEstimationResult(currentIssue.issueKey, user.accountId, customizedComments)" icon="md-add"> Estimate With Customized Comment </Button>
+          </div>
+          </Col>
         </Row>
       </div>
       <div class="filter-panel row">
@@ -113,6 +122,7 @@ export default Vue.extend({
       storyPoints: ['0', '0.5', '1', '2', '3', '5', '8', '13', '21', '34', '?'] as string[],
       currentActivatedPanel: [] as string[],
       issueKeyword: '' as string,
+      customizedComments: '' as string,
     };
   },
   computed: {
