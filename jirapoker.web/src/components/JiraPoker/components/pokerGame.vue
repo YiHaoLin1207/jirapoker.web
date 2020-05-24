@@ -16,16 +16,20 @@
     </div>
     <div class="row">
       <div class="watch-result-btn col-3">
-        Hello issue point
+        <Button :disabled="currentIssue.isRevealed === true" 
+        @click="clickOnWatchResult" 
+        icon="ios-search">Watch Result</Button>
       </div>
       <div class="re-estimate-btn col-3">
-        Hello issue point
+        <Button :disabled="currentIssue.isRevealed === false" 
+        @click="clickOnReEstimate" icon="ios-backspace">Re-estimation</Button>
       </div>
       <div class="send-with-comment col-3">
-        Hello issue point
+        <Input :disabled="currentIssue.isRevealed" v-model="customizedComments" style="min-width:125px" placeholder="leave comments here"/>
       </div>
       <div class="send-with-comment-btn col-3">
-        Hello issue point
+        <Button :disabled="currentIssue.isRevealed" 
+        @click="clickOnCustomizedComment" icon="md-add"> Estimate With Customized Comment </Button>
       </div>
     </div>
   </div>
@@ -47,6 +51,10 @@ export default Vue.extend({
       updateStoryPoint: ()=> {},
       storyPoints: StoryPoint.storyPoints,
       clickOnResult: ()=>{},
+      clickOnWatchResult: ()=>{},
+      clickOnReEstimate: ()=>{},
+      clickOnCustomizedComment: ()=>{},
+      customizedComments: '' as string,
     };
   },
 });
