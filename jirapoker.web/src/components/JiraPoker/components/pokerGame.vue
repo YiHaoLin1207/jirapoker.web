@@ -7,7 +7,11 @@
             </Select>
       </div>
       <div class="result-with-avatar col-9">
-        Hello issue point
+        <div v-for="(estimationResult, index) in currentIssue.estimationResults" :key="estimationResult.user.accountId">
+          <Badge :text="estimationResult.estimatedStoryPoint">
+            <clickable :user="estimationResult.user" @click="clickOnResult(estimationResult)"></clickable>
+          </Badge>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -38,6 +42,7 @@ export default Vue.extend({
     return {
       updateStoryPoint: ()=> {},
       storyPoints: StoryPoint.storyPoints,
+      clickOnResult: ()=>{},
     };
   },
 });
