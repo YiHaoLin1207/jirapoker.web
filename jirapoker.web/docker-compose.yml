@@ -6,8 +6,9 @@ services:
       dockerfile: Dockerfile
       args:
         VUE_APP_HOST_BACKEND_URL: http://192.168.96.20:5001/
-        VUE_APP_HOST_FRONTEND_PORT: 8081
+        VUE_APP_HOST_FRONTEND_PORT: 8083
+        JIRA_BOARD_NAME: EventHub
     ports:
-        - 8081:8081
+        - 8083:8083
 
 
