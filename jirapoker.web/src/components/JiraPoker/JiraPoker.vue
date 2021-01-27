@@ -216,7 +216,7 @@ export default Vue.extend({
     async setSprints() {
       const vm = this;
       const jiraPokerService = new JiraPokerService();
-      let sprints: Sprint[] = await jiraPokerService.getIssuesInActiveAndFutureSprints('product & DevOps Infra');
+      let sprints: Sprint[] = await jiraPokerService.getIssuesInActiveAndFutureSprints('Mo-Door Studio');
       vm.sprints = sprints;
     }
   },
